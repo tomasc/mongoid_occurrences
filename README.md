@@ -1,7 +1,9 @@
 # Mongoid Recurring Views
 
-Use [mongodb views](https://docs.mongodb.com/manual/core/views/) for querying
-and displaying recurring events.
+Use [Mongodb views](https://docs.mongodb.com/manual/core/views) for querying and displaying recurring events.
+
+A list of occurrences (embedded in a Mongoid Document, each defined by datetime from & datetime to) is expanded (typically on save) into a list of daily occurrences. Two aggregations project the events into Mongodb views (3.4+) that can be subsequently queried – both for the original, or the expanded occurrences.
+
 
 ## Installation
 
