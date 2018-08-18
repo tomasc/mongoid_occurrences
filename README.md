@@ -1,4 +1,4 @@
-# Mongoid Recurring Views
+# Mongoid Occurrence Views
 
 Use [Mongodb views](https://docs.mongodb.com/manual/core/views) for querying events with multiple occurrences.
 
@@ -10,7 +10,7 @@ A list of occurrences (embedded in a Mongoid Document, each defined by datetime 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'mongoid_recurring_views'
+gem 'mongoid_occurrence_views'
 ```
 
 And then execute:
@@ -19,7 +19,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install mongoid_recurring_views
+    $ gem install mongoid_occurrence_views
 
 ## Usage
 
@@ -33,12 +33,8 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/mongoid_recurring_views. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/tomasc/mongoid_occurrence_views. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the MongoidRecurringViews project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/mongoid_recurring_views/blob/master/CODE_OF_CONDUCT.md).
