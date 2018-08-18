@@ -1,7 +1,7 @@
 # Mongoid Recurring Views
 
-Use [mongodb views](https://docs.mongodb.com/manual/core/views/) to deal with
-querying and displaying recurring events.
+Use [mongodb views](https://docs.mongodb.com/manual/core/views/) for querying
+and displaying recurring events.
 
 ## Installation
 
