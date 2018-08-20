@@ -32,7 +32,7 @@ Or install it yourself as:
 
 ## Usage
 
-```
+```ruby
 class Event
   include Mongoid::Document
   include MongoidOccurrenceViews::HasOccurrences
@@ -53,11 +53,11 @@ It has the following fields:
 
 ### Querying
 
-```
+```ruby
 Event.with_occurrences_view do
 ```
 
-```
+```ruby
 EventPage.with_expanded_occurrences_view do
   = EventPage.criteria.…
 end
