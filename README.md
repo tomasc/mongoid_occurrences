@@ -1,16 +1,25 @@
-# Mongoid Recurring Views
+# Mongoid Occurrence Views
 
-Use [Mongodb views](https://docs.mongodb.com/manual/core/views) for querying events with multiple occurrences.
+An approach to dealing with events in [mongoid](https://github.com/mongodb/mongoid) using IceCube for schedules and [MongoDB views](https://docs.mongodb.com/manual/core/views) for querying.
 
-A list of occurrences (embedded in a Mongoid Document, each defined by datetime from & datetime to) is expanded (typically on save) into a list of daily occurrences. Two aggregations project the events into Mongodb views (3.4+) that can be subsequently queried – both for the original, or the expanded occurrences.
+Your model (say `Event`) embeds a list of occurrences. Each occurrence has a start time, an end time, and an optional schedule (for defining recurrence). When a schedule is defined, the occurrence is automatically "expanded" into a list of daily occurrences upon saving. This setup allows for a great deal of flexibility.
 
+The gem provides automatic aggregations which project the events into MongoDB views that can be subsequently queried, for either the original, or the expanded occurrences. This means that by using the view you can query `Event`s by their occurrences, say all `Event`s for Monday Aug 20.
+
+<!-- A list of occurrences (embedded in a Mongoid Document, each defined by datetime from & datetime to) is expanded (typically on save) into a list of daily occurrences. Two aggregations project the events into Mongodb views (3.4+) that can be subsequently queried – both for the original, or the expanded occurrences. -->
+
+<!-- Use [MongoDB views](https://docs.mongodb.com/manual/core/views) for querying events with multiple occurrences. -->
+
+## Requirements
+
+* MongoDB 3.4+
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'mongoid_recurring_views'
+gem 'mongoid_occurrence_views'
 ```
 
 And then execute:
@@ -19,11 +28,81 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install mongoid_recurring_views
+    $ gem install mongoid_occurrence_views
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+class Event
+  include Mongoid::Document
+  include MongoidOccurrenceViews::HasOccurrences
+  has_occurrences
+end
+```
+
+This defines an embedded `:occurrences` relation on `Event`.
+
+### Occurrences
+
+The occurrence model (`MongoidOccurrenceViews::Occurrence`) holds logic about it's own duration and recurrence.
+It has the following fields:
+* `dtstart`, (`DateTime`)
+* `dtend` (`DateTime`)
+* `all_day` (`Boolean`)
+* `schedule` (`MongoidIceCubeExtension::Schedule`)
+
+### Querying
+
+```
+Event.with_occurrences_view do
+```
+
+```
+EventPage.with_expanded_occurrences_view do
+  = EventPage.criteria.…
+end
+```
+
+### Configuration
+
+### Views
+
+In case you like to create the MongoDB views manually, you can their automatic
+creation:
+
+`has_occurrences create_views: false`
+
+and then define them in for instance an initializer:
+
+```ruby
+# config/initializers/mongoid_occurrence_views.rb
+
+Mongoid::CreateView.call(
+  Event::EXPANDED_VIEW_NAME,
+  Event.collection.name,
+  [
+    { '$match': { '_type': EventPage.to_s } },
+    { '$addFields': { '_expanded_occurrences': '$expanded_occurrences' } },
+    { '$unwind': '$_expanded_occurrences' },
+    { '$addFields': {
+        '_dtstart': '$_expanded_occurrences.dtstart',
+        '_dtend': '$_expanded_occurrences.dtend',
+        '_all_day': '$_expanded_occurrences.all_day',
+        '_sort_key': '$_expanded_occurrences.dtstart'
+      }
+    }
+  ]
+)
+```
+
+#### Occurrence class
+
+It's possible to specify which model to use:
+
+`has_occurrences occurrence_class_name: 'MyOccurrence'`
+
+This is helpful in the cases where you would like to extend, change, or override
+the default behavior of the `MongoidOccurrenceViews::Occurrence` model.
 
 ## Development
 
@@ -33,12 +112,8 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/mongoid_recurring_views. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/tomasc/mongoid_occurrence_views.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the MongoidRecurringViews project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/mongoid_recurring_views/blob/master/CODE_OF_CONDUCT.md).
