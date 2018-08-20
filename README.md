@@ -4,7 +4,7 @@ Makes one's life easier when working with events that have multiple occurrences,
 
 1. define multiple occurrences (or a recurring schedule) in a [Mongoid](https://github.com/mongodb/mongoid) document
 2. expand these occurrences or a recurring schedule into series of daily events and embed them in the document
-3. unwind the parent document into a [MongoDB view](https://docs.mongodb.com/manual/core/views) (think virtual collection defined by an aggregation) so that it becomes very easy to filter the parent documents using time-based queries
+3. unwind the parent document into a [MongoDB view](https://docs.mongodb.com/manual/core/views) (think virtual collection defined by an aggregation) so that it becomes very easy to query against the parent documents using time-based criteria
 
 
 ## Requirements
