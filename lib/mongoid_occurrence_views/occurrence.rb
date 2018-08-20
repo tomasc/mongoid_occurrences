@@ -11,7 +11,6 @@ module MongoidOccurrenceViews
         field :all_day, type: Boolean, default: false
 
         field :schedule, type: MongoidIceCubeExtension::Schedule
-        field :occurrences, type: Array
 
         embeds_many :daily_occurrences, class_name: 'MongoidOccurrenceViews::Occurrence::DailyOccurrence', order: :dtstart.asc
 
@@ -22,7 +21,6 @@ module MongoidOccurrenceViews
       end
     end
 
-    # keep this separate so it can be read and/or overridden
     def schedule_dtend
       dtstart + 1.year
     end
@@ -31,11 +29,15 @@ module MongoidOccurrenceViews
       schedule.present?
     end
 
+    def spans_days?
+      date_range.first != date_range.last
+    end
+
     private
 
     def set_daily_occurrences
       set_daily_occurrences_from_schedule
-      set_daily_occurrences_from_datetime_range
+      set_daily_occurrences_from_date_range
     end
 
     def set_daily_occurrences_from_schedule
@@ -43,20 +45,38 @@ module MongoidOccurrenceViews
 
       schedule.occurrences(schedule_dtend).collect do |occurrence|
         occurrence_dtstart = occurrence.start_time
-        occurrence_dtend = occurrence.end_time
         occurrence_dtend = occurrence.end_time.change(hour: self.dtend.hour, min: self.dtend.minute)
         daily_occurrences.build(dtstart: occurrence_dtstart, dtend: occurrence_dtend, all_day: all_day)
       end
     end
 
-    def set_daily_occurrences_from_datetime_range
+    def set_daily_occurrences_from_date_range
       return if recurring?
 
-      Range.new(dtstart.to_date, dtend.to_date).each_with_index.map do |date, index|
-        occurence_dtstart = dtstart + index.days
-        occurence_dtend = occurence_dtstart.change(hour: dtend.hour, min: dtend.min, sec: dtend.sec)
+      date_range.each_with_index.each do |date, index|
+        case
+        when all_day?
+          occurence_dtstart = date.beginning_of_day
+          occurence_dtend = date.end_of_day
+        when !spans_days?
+          occurence_dtstart = dtstart
+          occurence_dtend = dtend
+        when date == date_range.first
+          occurence_dtstart = dtstart
+          occurence_dtend = date.end_of_day
+        when date == date_range.last
+          occurence_dtstart = date.beginning_of_day
+          occurence_dtend = dtend
+        else
+          occurence_dtstart = date.beginning_of_day
+          occurence_dtend = date.end_of_day
+        end
         daily_occurrences.build(dtstart: occurence_dtstart, dtend: occurence_dtend, all_day: all_day)
       end
+    end
+
+    def date_range
+      Range.new(dtstart.to_date, dtend.to_date)
     end
 
     class DailyOccurrence

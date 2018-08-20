@@ -1,8 +1,8 @@
 require "test_helper"
 
 describe MongoidOccurrenceViews::Occurrence do
-  let(:start_date) { DateTime.parse '20/08/2018 09:00' }
-  let(:end_date) { DateTime.parse '20/08/2018 21:00' }
+  let(:start_date) { DateTime.parse('20/08/2018 10:00 +0200') }
+  let(:end_date) { DateTime.parse('20/08/2018 21:00 +0200') }
   let(:all_day) { false }
   let(:schedule) { nil }
 
@@ -25,12 +25,39 @@ describe MongoidOccurrenceViews::Occurrence do
     before { occurrence.validate! }
 
     it { occurrence.daily_occurrences.to_a.count.must_equal 7 }
-    it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [] } # TODO: specify expected result
-    it { occurrence.daily_occurrences.pluck(:dtend).must_equal [] } # TODO: specify expected result
+    it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date, start_date + 1.day, start_date + 2.days, start_date + 3.days, start_date + 4.days, start_date + 5.days, start_date + 6.days] }
+    it { occurrence.daily_occurrences.pluck(:dtend).must_equal [end_date, end_date + 1.day, end_date + 2.days, end_date + 3.days, end_date + 4.days, end_date + 5.days, end_date + 6.days] }
     it { occurrence.daily_occurrences.pluck(:all_day).uniq.must_equal [false] }
   end
 
   describe 'expanding datetime range' do
+    describe 'spanning one day' do
+      before { occurrence.validate! }
 
+      it { occurrence.daily_occurrences.to_a.count.must_equal 1 }
+      it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date] }
+      it { occurrence.daily_occurrences.pluck(:dtend).must_equal [end_date] }
+      it { occurrence.daily_occurrences.pluck(:all_day).uniq.must_equal [false] }
+    end
+
+    describe 'spanning multiple days' do
+      let(:end_date) { DateTime.parse('22/08/2018 21:00 +0200') }
+
+      before { occurrence.validate! }
+
+      it { occurrence.daily_occurrences.to_a.count.must_equal 3 }
+      it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date, (start_date + 1.day).beginning_of_day, (start_date + 2.days).beginning_of_day] }
+      it { occurrence.daily_occurrences.pluck(:dtend).must_equal [start_date.end_of_day, (start_date + 1.day).end_of_day, end_date] }
+      it { occurrence.daily_occurrences.pluck(:all_day).uniq.must_equal [false] }
+
+      describe 'with all_day' do
+        let(:all_day) { true }
+
+        it { occurrence.daily_occurrences.pluck(:all_day).uniq.must_equal [true] }
+
+        it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date.beginning_of_day, (start_date + 1.day).beginning_of_day, (start_date + 2.days).beginning_of_day] }
+        it { occurrence.daily_occurrences.pluck(:dtend).must_equal [start_date.end_of_day, (start_date + 1.day).end_of_day, end_date.end_of_day] }
+      end
+    end
   end
 end
