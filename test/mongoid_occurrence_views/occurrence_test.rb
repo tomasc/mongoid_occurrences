@@ -1,38 +1,36 @@
 require "test_helper"
 
-module MongoidOccurrenceViews
-  describe Occurrence do
-    let(:start_date) { Time.parse '20/08/2018 09:00' }
-    let(:end_date) { Time.parse '20/08/2018 21:00' }
+describe MongoidOccurrenceViews::Occurrence do
+  let(:start_date) { DateTime.parse '20/08/2018 09:00' }
+  let(:end_date) { DateTime.parse '20/08/2018 21:00' }
+  let(:all_day) { false }
+  let(:schedule) { nil }
 
-    subject { DummyOccurrence.new(dtstart: start_date) }
+  let(:occurrence) { DummyOccurrence.new(dtstart: start_date, dtend: end_date, all_day: all_day, schedule: schedule) }
 
-    describe 'fields' do
-      it { subject.must_respond_to :dtstart }
-      it { subject.must_respond_to :dtend }
-      it { subject.must_respond_to :all_day }
-      it { subject.must_respond_to :schedule }
-    end
+  describe 'fields' do
+    it { occurrence.must_respond_to :dtstart }
+    it { occurrence.must_respond_to :dtend }
+    it { occurrence.must_respond_to :all_day }
+    it { occurrence.must_respond_to :schedule }
+  end
 
-    describe '#schedule' do
-      let(:ice_cube_schedule) {
-        IceCube::Schedule.new(start_date) do |s|
-          s.add_recurrence_rule IceCube::Rule.daily(1).count(7)
-        end
-      }
+  describe 'relations' do
+    it { occurrence.must_respond_to :daily_occurrences }
+  end
 
-      subject { DummyOccurrence.new(dtstart: start_date, dtend: end_date, schedule: ice_cube_schedule) }
+  describe 'expanding schedule' do
+    let(:schedule) { IceCube::Schedule.new(start_date) { |s| s.add_recurrence_rule IceCube::Rule.daily(1).count(7) } }
 
-      describe 'fields' do
-        it { subject.must_respond_to :occurrences }
-      end
+    before { occurrence.validate! }
 
-      describe '#occurrences' do
-        before { subject.run_callbacks(:validation) }
+    it { occurrence.daily_occurrences.to_a.count.must_equal 7 }
+    it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [] } # TODO: specify expected result
+    it { occurrence.daily_occurrences.pluck(:dtend).must_equal [] } # TODO: specify expected result
+    it { occurrence.daily_occurrences.pluck(:all_day).uniq.must_equal [false] }
+  end
 
-        it { subject.occurrences.must_be :present? }
-        it { subject.occurrences.first.must_equal({ dtstart: start_date.to_time.utc, dtend: end_date.to_time.utc, all_day: false }) }
-      end
-    end
+  describe 'expanding datetime range' do
+
   end
 end
