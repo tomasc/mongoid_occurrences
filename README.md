@@ -67,9 +67,9 @@ end
 The `embeds_many_occurences` macro will setup embedded relation that holds definition of occurrences. For example:
 
 ```ruby
-<#Occurrence dtstart: …, dtend: …, all_day: true, schedule: …>
-<#Occurrence dtstart: …, dtend: …, all_day: true, schedule: …>
-<#Occurrence dtstart: …, dtend: …, all_day: true, schedule: …>
+<#Occurrence dtstart: …, dtend: …, all_day: …, schedule: …>
+<#Occurrence dtstart: …, dtend: …, all_day: …, schedule: …>
+<#Occurrence dtstart: …, dtend: …, all_day: …, schedule: …>
 ```
 
 An additional embedded relation `expanded_occurrences` is defined. On each save of the `Event` document, the array of occurences will be expanded:
