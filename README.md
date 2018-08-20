@@ -2,9 +2,9 @@
 
 Makes one's life easier when working with events that have multiple occurrences, or a recurring schedule. This gem helps to:
 
-1. define multiple occurrences (or a recurring schedule) in a Mongoid document
+1. define multiple occurrences (or a recurring schedule) in a [Mongoid](https://github.com/mongodb/mongoid) document
 2. expand these occurrences or a recurring schedule into series of daily events and embed them in the document
-3. unwind the parent document into a Mongoid view (think virtual collection defined by an aggregation) so that it becomes very easy to filter the parent documents using time-based queries
+3. unwind the parent document into a [MongoDB view](https://docs.mongodb.com/manual/core/views) (think virtual collection defined by an aggregation) so that it becomes very easy to filter the parent documents using time-based queries
 
 
 
@@ -44,36 +44,54 @@ Or install it yourself as:
 
 ## Usage
 
+### Occurrences
+
+Define a Mongoid document class that will hold information about each occurrence.
+
 ```ruby
-class Event
+class Occurrence
   include Mongoid::Document
-  include MongoidOccurrenceViews::HasOccurrences
-  has_occurrences
+  include MongoidOccurrenceViews::Occurrence
+  
+  embedded_in_event class_name: 'Event'
 end
 ```
 
-This defines an embedded `:occurrences` relation on `Event`.
+The following fields will become available:
 
-### Occurrences
-
-The occurrence model (`MongoidOccurrenceViews::Occurrence`) holds logic about it's own duration and recurrence.
-It has the following fields:
 * `dtstart`, (`DateTime`)
 * `dtend` (`DateTime`)
 * `all_day` (`Boolean`)
 * `schedule` (`MongoidIceCubeExtension::Schedule`)
 
-### Querying
+And the following scopes:
+
+* `…`
+
+### Events
 
 ```ruby
-Event.with_occurrences_view do
-```
-
-```ruby
-EventPage.with_expanded_occurrences_view do
-  = EventPage.criteria.…
+class Event
+  include Mongoid::Document
+  include MongoidOccurrenceViews::Event
+  
+  embeds_many_occurrences class_name: 'Occurrence'
 end
 ```
+
+The `embeds_many_occurences` macro will setup embedded relation that holds definition of occurrences. For example:
+
+```ruby
+<#Occurrence dtstart: …, dtend: …, all_day: true, schedule: …>
+<#Occurrence dtstart: …, dtend: …, all_day: true, schedule: …>
+<#Occurrence dtstart: …, dtend: …, all_day: true, schedule: …>
+```
+
+An additional embedded relation `expanded_occurrences` is defined. On each save of the `Event` document, the array of occurences will be expanded:
+
+* multi-day occurrences are split into single-day occurrences
+* recurring schedules are expanded into single-day occurrences
+
 
 ### Configuration
 
