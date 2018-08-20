@@ -88,15 +88,17 @@ The `embeds_many_occurrences` macro will setup two MongoDB views, based on the `
 One can then use the ability of Mongoid to specify a collection to query against, like this:
 
 ```ruby
-- Event.with(collection: Event.occurrences_view_name) do
-  = Event.gte(dtstart: Time.zone.now)
+Event.with(collection: Event.occurrences_view_name) do
+  Event.gte(dtstart: Time.zone.now).…
+end
 ```
 
 or
 
 ```ruby
-- Event.with(collection: Event.expanded_occurrences_view_name) do
-  = Event.gte(dtstart: Time.zone.now)
+Event.with(collection: Event.expanded_occurrences_view_name) do
+  Event.gte(dtstart: Time.zone.now).…
+end
 ```
 
 ## Development
