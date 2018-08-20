@@ -1,6 +1,18 @@
 # Mongoid Occurrence Views
 
-An approach to dealing with events in [mongoid](https://github.com/mongodb/mongoid) using IceCube for schedules and [MongoDB views](https://docs.mongodb.com/manual/core/views) for querying.
+Makes one's life easier when working with events that have multiple occurrences, or a recurring schedule. This gem helps to:
+
+1. define multiple occurrences (or a recurring schedule) in a Mongoid document
+2. expand these occurrences or a recurring schedule into series of daily events and embed them in the document
+3. unwind the parent document into a Mongoid view (think virtual collection defined by an aggregation) so that it becomes very easy to filter the parent documents using time-based queries
+
+
+
+
+
+---
+
+An approach to dealing with events in [Mongoid](https://github.com/mongodb/mongoid) using IceCube for schedules and [MongoDB views](https://docs.mongodb.com/manual/core/views) for querying.
 
 Your model (say `Event`) embeds a list of occurrences. Each occurrence has a start time, an end time, and an optional schedule (for defining recurrence). When a schedule is defined, the occurrence is automatically "expanded" into a list of daily occurrences upon saving. This setup allows for a great deal of flexibility.
 
