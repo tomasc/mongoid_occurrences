@@ -7,21 +7,6 @@ Makes one's life easier when working with events that have multiple occurrences,
 3. unwind the parent document into a [MongoDB view](https://docs.mongodb.com/manual/core/views) (think virtual collection defined by an aggregation) so that it becomes very easy to filter the parent documents using time-based queries
 
 
-
-
-
----
-
-An approach to dealing with events in [Mongoid](https://github.com/mongodb/mongoid) using IceCube for schedules and [MongoDB views](https://docs.mongodb.com/manual/core/views) for querying.
-
-Your model (say `Event`) embeds a list of occurrences. Each occurrence has a start time, an end time, and an optional schedule (for defining recurrence). When a schedule is defined, the occurrence is automatically "expanded" into a list of daily occurrences upon saving. This setup allows for a great deal of flexibility.
-
-The gem provides automatic aggregations which project the events into MongoDB views that can be subsequently queried, for either the original, or the expanded occurrences. This means that by using the view you can query `Event`s by their occurrences, say all `Event`s for Monday Aug 20.
-
-<!-- A list of occurrences (embedded in a Mongoid Document, each defined by datetime from & datetime to) is expanded (typically on save) into a list of daily occurrences. Two aggregations project the events into Mongodb views (3.4+) that can be subsequently queried – both for the original, or the expanded occurrences. -->
-
-<!-- Use [MongoDB views](https://docs.mongodb.com/manual/core/views) for querying events with multiple occurrences. -->
-
 ## Requirements
 
 * MongoDB 3.4+
@@ -93,46 +78,26 @@ An additional embedded relation `expanded_occurrences` is defined. On each save 
 * recurring schedules are expanded into single-day occurrences
 
 
-### Configuration
+### Views & queries
 
-### Views
+The `embeds_many_occurrences` macro will setup two MongoDB views, based on the `Event` document collection name:
 
-In case you like to create the MongoDB views manually, you can their automatic
-creation:
+* `Event.occurrences_view_name` (`event__view`) that holds the `Event` documents with occurrences unwound as originally specified
+* `Event.expanded_occurrences_view_name` (`event__expanded_view`) that hold `Event` documents with occurrences unwound per day
 
-`has_occurrences create_views: false`
-
-and then define them in for instance an initializer:
+One can then use the ability of Mongoid to specify a collection to query against, like this:
 
 ```ruby
-# config/initializers/mongoid_occurrence_views.rb
-
-Mongoid::CreateView.call(
-  Event::EXPANDED_VIEW_NAME,
-  Event.collection.name,
-  [
-    { '$match': { '_type': EventPage.to_s } },
-    { '$addFields': { '_expanded_occurrences': '$expanded_occurrences' } },
-    { '$unwind': '$_expanded_occurrences' },
-    { '$addFields': {
-        '_dtstart': '$_expanded_occurrences.dtstart',
-        '_dtend': '$_expanded_occurrences.dtend',
-        '_all_day': '$_expanded_occurrences.all_day',
-        '_sort_key': '$_expanded_occurrences.dtstart'
-      }
-    }
-  ]
-)
+- Event.with(collection: Event.occurrences_view_name) do
+  = Event.gte(dtstart: Time.zone.now)
 ```
 
-#### Occurrence class
+or
 
-It's possible to specify which model to use:
-
-`has_occurrences occurrence_class_name: 'MyOccurrence'`
-
-This is helpful in the cases where you would like to extend, change, or override
-the default behavior of the `MongoidOccurrenceViews::Occurrence` model.
+```ruby
+- Event.with(collection: Event.expanded_occurrences_view_name) do
+  = Event.gte(dtstart: Time.zone.now)
+```
 
 ## Development
 
