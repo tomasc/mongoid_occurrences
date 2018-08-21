@@ -20,7 +20,7 @@ describe MongoidOccurrenceViews::Occurrence do
   end
 
   describe 'expanding schedule' do
-    let(:schedule) { IceCube::Schedule.new(start_date) { |s| s.add_recurrence_rule IceCube::Rule.daily(1).count(7) } }
+    let(:schedule) { IceCube::Schedule.new(start_date.to_time) { |s| s.add_recurrence_rule IceCube::Rule.daily(1).count(7) } }
 
     before { occurrence.validate! }
 
