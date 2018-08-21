@@ -1,4 +1,4 @@
-require "test_helper"
+require 'test_helper'
 
 describe MongoidOccurrenceViews::Occurrence do
   let(:start_date) { DateTime.parse('20/08/2018 10:00 +0200') }
@@ -52,7 +52,7 @@ describe MongoidOccurrenceViews::Occurrence do
 
       before { occurrence.validate! }
 
-      it { occurrence.daily_occurrences.to_a.count.must_equal 7 }
+      it { occurrence.daily_occurrences.to_a.size.must_equal 7 }
       it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date, start_date + 1.day, start_date + 2.days, start_date + 3.days, start_date + 4.days, start_date + 5.days, start_date + 6.days] }
       it { occurrence.daily_occurrences.pluck(:dtend).must_equal [end_date, end_date + 1.day, end_date + 2.days, end_date + 3.days, end_date + 4.days, end_date + 5.days, end_date + 6.days] }
     end
@@ -61,7 +61,7 @@ describe MongoidOccurrenceViews::Occurrence do
       before { occurrence.validate! }
 
       describe 'spanning one day' do
-        it { occurrence.daily_occurrences.to_a.count.must_equal 1 }
+        it { occurrence.daily_occurrences.to_a.size.must_equal 1 }
         it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date] }
         it { occurrence.daily_occurrences.pluck(:dtend).must_equal [end_date] }
 
@@ -76,7 +76,7 @@ describe MongoidOccurrenceViews::Occurrence do
       describe 'spanning multiple days' do
         let(:end_date) { DateTime.parse('22/08/2018 21:00 +0200') }
 
-        it { occurrence.daily_occurrences.to_a.count.must_equal 3 }
+        it { occurrence.daily_occurrences.to_a.size.must_equal 3 }
         it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date, (start_date + 1.day).beginning_of_day, (start_date + 2.days).beginning_of_day] }
         it { occurrence.daily_occurrences.pluck(:dtend).must_equal [start_date.end_of_day, (start_date + 1.day).end_of_day, end_date] }
 
