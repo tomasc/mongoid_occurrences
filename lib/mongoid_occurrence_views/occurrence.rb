@@ -17,6 +17,7 @@ module MongoidOccurrenceViews
         validates_presence_of :dtstart
         validates_presence_of :dtend
 
+        before_validation :set_all_day
         before_validation :set_daily_occurrences
       end
     end
@@ -39,6 +40,12 @@ module MongoidOccurrenceViews
       Range.new(dtstart.to_date, dtend.to_date)
     end
 
+    def set_all_day
+      return unless all_day?
+      self.dtstart = dtstart.beginning_of_day
+      self.dtend = dtend.end_of_day
+    end
+
     def set_daily_occurrences
       set_daily_occurrences_from_schedule
       set_daily_occurrences_from_date_range
@@ -50,8 +57,7 @@ module MongoidOccurrenceViews
       schedule.occurrences(schedule_dtend.to_time).collect do |occurrence|
         daily_occurrences.build(
           dtstart: occurrence.start_time,
-          dtend: occurrence.end_time.change(hour: dtend.hour, min: dtend.minute),
-          all_day: all_day
+          dtend: occurrence.end_time.change(hour: dtend.hour, min: dtend.minute)
         )
       end
     end
@@ -60,21 +66,17 @@ module MongoidOccurrenceViews
       return if recurring?
 
       date_range.each_with_index.each do |date, index|
-
         occurence_dtstart = case
-                            when all_day? then date.beginning_of_day
                             when spans_days? then date == date_range.first ? dtstart : date.beginning_of_day
                             else dtstart
                             end
 
         occurence_dtend =   case
-                            when all_day? then date.end_of_day
                             when spans_days? then date == date_range.last ? dtend : date.end_of_day
                             else dtend
                             end
 
-        daily_occurrences.build(dtstart: occurence_dtstart, dtend: occurence_dtend, all_day: all_day)
-
+        daily_occurrences.build(dtstart: occurence_dtstart, dtend: occurence_dtend)
       end
     end
 
@@ -84,7 +86,6 @@ module MongoidOccurrenceViews
       # alias fields to keep document size small
       field :ds, as: :dtstart, type: DateTime
       field :de, as: :dtend, type: DateTime
-      field :ad, as: :all_day, type: Boolean
     end
   end
 end

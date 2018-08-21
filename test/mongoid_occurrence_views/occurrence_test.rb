@@ -19,45 +19,58 @@ describe MongoidOccurrenceViews::Occurrence do
     it { occurrence.must_respond_to :daily_occurrences }
   end
 
-  describe 'expanding schedule' do
-    let(:schedule) { IceCube::Schedule.new(start_date.to_time) { |s| s.add_recurrence_rule IceCube::Rule.daily(1).count(7) } }
+  describe 'with all_day' do
+    let(:all_day) { true }
 
     before { occurrence.validate! }
 
-    it { occurrence.daily_occurrences.to_a.count.must_equal 7 }
-    it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date, start_date + 1.day, start_date + 2.days, start_date + 3.days, start_date + 4.days, start_date + 5.days, start_date + 6.days] }
-    it { occurrence.daily_occurrences.pluck(:dtend).must_equal [end_date, end_date + 1.day, end_date + 2.days, end_date + 3.days, end_date + 4.days, end_date + 5.days, end_date + 6.days] }
-    it { occurrence.daily_occurrences.pluck(:all_day).uniq.must_equal [false] }
+    it { occurrence.dtstart.must_equal start_date.beginning_of_day }
+    it { occurrence.dtend.must_equal end_date.end_of_day }
   end
 
-  describe 'expanding datetime range' do
-    describe 'spanning one day' do
+  describe 'expansion' do
+    describe 'with schedule' do
+      let(:schedule) { IceCube::Schedule.new(start_date.to_time) { |s| s.add_recurrence_rule IceCube::Rule.daily(1).count(7) } }
+
       before { occurrence.validate! }
 
-      it { occurrence.daily_occurrences.to_a.count.must_equal 1 }
-      it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date] }
-      it { occurrence.daily_occurrences.pluck(:dtend).must_equal [end_date] }
-      it { occurrence.daily_occurrences.pluck(:all_day).uniq.must_equal [false] }
+      it { occurrence.daily_occurrences.to_a.count.must_equal 7 }
+      it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date, start_date + 1.day, start_date + 2.days, start_date + 3.days, start_date + 4.days, start_date + 5.days, start_date + 6.days] }
+      it { occurrence.daily_occurrences.pluck(:dtend).must_equal [end_date, end_date + 1.day, end_date + 2.days, end_date + 3.days, end_date + 4.days, end_date + 5.days, end_date + 6.days] }
     end
 
-    describe 'spanning multiple days' do
-      let(:end_date) { DateTime.parse('22/08/2018 21:00 +0200') }
-
+    describe 'with datetime range' do
       before { occurrence.validate! }
 
-      it { occurrence.daily_occurrences.to_a.count.must_equal 3 }
-      it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date, (start_date + 1.day).beginning_of_day, (start_date + 2.days).beginning_of_day] }
-      it { occurrence.daily_occurrences.pluck(:dtend).must_equal [start_date.end_of_day, (start_date + 1.day).end_of_day, end_date] }
-      it { occurrence.daily_occurrences.pluck(:all_day).uniq.must_equal [false] }
+      describe 'spanning one day' do
+        it { occurrence.daily_occurrences.to_a.count.must_equal 1 }
+        it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date] }
+        it { occurrence.daily_occurrences.pluck(:dtend).must_equal [end_date] }
 
-      describe 'with all_day' do
-        let(:all_day) { true }
+        describe 'all_day' do
+          let(:all_day) { true }
 
-        it { occurrence.daily_occurrences.pluck(:all_day).uniq.must_equal [true] }
+          it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date.beginning_of_day] }
+          it { occurrence.daily_occurrences.pluck(:dtend).must_equal [end_date.end_of_day] }
+        end
+      end
 
-        it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date.beginning_of_day, (start_date + 1.day).beginning_of_day, (start_date + 2.days).beginning_of_day] }
-        it { occurrence.daily_occurrences.pluck(:dtend).must_equal [start_date.end_of_day, (start_date + 1.day).end_of_day, end_date.end_of_day] }
+      describe 'spanning multiple days' do
+        let(:end_date) { DateTime.parse('22/08/2018 21:00 +0200') }
+
+        it { occurrence.daily_occurrences.to_a.count.must_equal 3 }
+        it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date, (start_date + 1.day).beginning_of_day, (start_date + 2.days).beginning_of_day] }
+        it { occurrence.daily_occurrences.pluck(:dtend).must_equal [start_date.end_of_day, (start_date + 1.day).end_of_day, end_date] }
+
+        describe 'all_day' do
+          let(:end_date) { DateTime.parse('22/08/2018 21:00 +0200') }
+          let(:all_day) { true }
+
+          it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [start_date.beginning_of_day, (start_date + 1.day).beginning_of_day, (start_date + 2.days).beginning_of_day] }
+          it { occurrence.daily_occurrences.pluck(:dtend).must_equal [start_date.end_of_day, (start_date + 1.day).end_of_day, end_date.end_of_day] }
+        end
       end
     end
   end
+
 end
