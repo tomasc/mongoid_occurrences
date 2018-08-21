@@ -21,7 +21,23 @@ describe MongoidOccurrenceViews::Occurrence do
     it { occurrence.must_respond_to :daily_occurrences }
   end
 
-  describe 'with all_day' do
+  describe 'all_day' do
+    describe 'when dtstart & dtend set to beginning & end of day' do
+      let(:start_date) { DateTime.parse('20/08/2018 10:00 +0200').beginning_of_day }
+      let(:end_date) { DateTime.parse('20/08/2018 21:00 +0200').end_of_day }
+
+      it { occurrence.must_be :all_day? }
+    end
+
+    describe 'when dtstart & dtend not set to beginning & end of day' do
+      let(:start_date) { DateTime.parse('20/08/2018 10:00 +0200') }
+      let(:end_date) { DateTime.parse('20/08/2018 21:00 +0200') }
+
+      it { occurrence.wont_be :all_day? }
+    end
+  end
+
+  describe '#adjust_dates_for_all_day on validate!' do
     let(:all_day) { true }
 
     before { occurrence.validate! }
