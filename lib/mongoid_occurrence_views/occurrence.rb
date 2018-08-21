@@ -73,8 +73,11 @@ module MongoidOccurrenceViews
                             else dtend
                             end
 
-        daily_occurrences.build(dtstart: occurence_dtstart, dtend: occurence_dtend, all_day: all_day)
-
+        daily_occurrences.build(
+          dtstart: occurence_dtstart,
+          dtend: occurence_dtend,
+          all_day: all_day
+        )
       end
     end
 
