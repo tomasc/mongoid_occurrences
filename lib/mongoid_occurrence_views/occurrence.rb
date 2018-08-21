@@ -60,7 +60,6 @@ module MongoidOccurrenceViews
       return if recurring?
 
       date_range.each_with_index.each do |date, index|
-
         occurence_dtstart = case
                             when all_day? then date.beginning_of_day
                             when spans_days? then date == date_range.first ? dtstart : date.beginning_of_day
