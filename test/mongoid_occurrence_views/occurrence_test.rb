@@ -12,10 +12,12 @@ describe MongoidOccurrenceViews::Occurrence do
     it { occurrence.must_respond_to :dtstart }
     it { occurrence.must_respond_to :dtend }
     it { occurrence.must_respond_to :all_day }
+    it { occurrence.must_respond_to :all_day? }
     it { occurrence.must_respond_to :schedule }
   end
 
   describe 'relations' do
+    it { occurrence.must_respond_to :event }
     it { occurrence.must_respond_to :daily_occurrences }
   end
 
@@ -72,5 +74,4 @@ describe MongoidOccurrenceViews::Occurrence do
       end
     end
   end
-
 end
