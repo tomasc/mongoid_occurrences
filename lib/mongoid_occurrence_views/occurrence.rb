@@ -48,6 +48,7 @@ module MongoidOccurrenceViews
 
     def adjust_dates_for_all_day
       return unless all_day?
+
       self.dtstart = dtstart.beginning_of_day
       self.dtend = dtend.end_of_day
     end
