@@ -61,7 +61,7 @@ module MongoidOccurrenceViews
     def set_daily_occurrences_from_schedule
       return unless recurring?
 
-      schedule.occurrences(schedule_dtend.to_time).collect do |occurrence|
+      schedule.occurrences(schedule_dtend.to_time).each do |occurrence|
         daily_occurrences.build(
           dtstart: occurrence.start_time,
           dtend: occurrence.end_time.change(hour: dtend.hour, min: dtend.minute)
@@ -78,6 +78,7 @@ module MongoidOccurrenceViews
       date_range.each do |date|
         occurence_dtstart = is_single_day || date == date_range.first ? dtstart : date.beginning_of_day
         occurence_dtend = is_single_day || date == date_range.last ? dtend : date.end_of_day
+
         daily_occurrences.build(dtstart: occurence_dtstart, dtend: occurence_dtend)
       end
     end
