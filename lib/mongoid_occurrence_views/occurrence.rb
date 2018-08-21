@@ -72,11 +72,11 @@ module MongoidOccurrenceViews
       return if recurring?
 
       date_range = Range.new(dtstart.to_date, dtend.to_date)
-      is_single_day = date_range.first == date_range.last
+      is_single_day = (date_range.first == date_range.last)
 
       date_range.each do |date|
-        occurence_dtstart = (is_single_day || date == date_range.first) ? dtstart : date.beginning_of_day
-        occurence_dtend = (is_single_day || date == date_range.last) ? dtend : date.end_of_day
+        occurence_dtstart = is_single_day || date == date_range.first ? dtstart : date.beginning_of_day
+        occurence_dtend = is_single_day || date == date_range.last ? dtend : date.end_of_day
         daily_occurrences.build(dtstart: occurence_dtstart, dtend: occurence_dtend)
       end
     end
