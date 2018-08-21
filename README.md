@@ -37,7 +37,7 @@ Define a Mongoid document class that will hold information about each occurrence
 class Occurrence
   include Mongoid::Document
   include MongoidOccurrenceViews::Occurrence
-  
+
   embedded_in_event class_name: 'Event'
 end
 ```
@@ -59,7 +59,7 @@ And the following scopes:
 class Event
   include Mongoid::Document
   include MongoidOccurrenceViews::Event
-  
+
   embeds_many_occurrences class_name: 'Occurrence'
 end
 ```
@@ -72,7 +72,7 @@ The `embeds_many_occurences` macro will setup embedded relation that holds defin
 <Occurrence dtstart: …, dtend: …, all_day: …, schedule: …>
 ```
 
-An additional embedded relation `expanded_occurrences` is defined. On each save of the `Event` document, the array of occurences will be expanded:
+Before each validation callback, each occurrence will expand its definition as follows:
 
 * multi-day occurrences are split into single-day occurrences
 * recurring schedules are expanded into single-day occurrences
@@ -80,7 +80,8 @@ An additional embedded relation `expanded_occurrences` is defined. On each save 
 
 ### Views & queries
 
-The `embeds_many_occurrences` macro will setup two MongoDB views, based on the `Event` document collection name:
+These previously expanded occurrences are then used for Mongoid aggregations.
+The `embeds_many_occurrences` macro sets up two MongoDB views, based on the `Event` document collection name:
 
 * `Event.occurrences_view_name` (`event__view`) that holds the `Event` documents with occurrences unwound as originally specified
 * `Event.expanded_occurrences_view_name` (`event__expanded_view`) that hold `Event` documents with occurrences unwound per day
