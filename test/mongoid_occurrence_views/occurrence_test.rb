@@ -27,6 +27,7 @@ describe MongoidOccurrenceViews::Occurrence do
       let(:end_date) { DateTime.parse('20/08/2018 21:00 +0200').end_of_day }
 
       it { occurrence.must_be :all_day? }
+      it { occurrence.dtend.must_equal end_date }
     end
 
     describe 'when dtstart & dtend not set to beginning & end of day' do
@@ -57,7 +58,7 @@ describe MongoidOccurrenceViews::Occurrence do
       it { occurrence.daily_occurrences.pluck(:dtend).must_equal [end_date, end_date + 1.day, end_date + 2.days, end_date + 3.days, end_date + 4.days, end_date + 5.days, end_date + 6.days] }
     end
 
-    describe 'with datetime range' do
+    describe 'with date_time range' do
       before { occurrence.validate! }
 
       describe 'spanning one day' do

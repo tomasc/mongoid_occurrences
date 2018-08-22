@@ -1,15 +1,15 @@
 require 'test_helper'
 
 describe 'Queries for events' do
-  let(:start_date) { DateTime.parse('20/08/2018 10:00 +0200') }
-  let(:end_date) { DateTime.parse('26/08/2018 21:00 +0200') }
-  let(:occurrence_recurring) { DummyOccurrence.new(dtstart: start_date, dtend: end_date) }
-  let(:dummy_event) { DummyEvent.new(occurrences: [occurrence_recurring]) }
+  let(:start_date) { DateTime.now.beginning_of_day + 4.hours }
+  let(:end_date) { start_date + 4.days }
+  let(:all_day) { false }
+  let(:occurrence) { DummyOccurrence.new(dtstart: start_date, dtend: end_date, all_day: all_day) }
+  let(:event) { DummyEvent.new(occurrences: [occurrence]) }
 
-  before { dummy_event.save! }
+  before { event.save! }
 
-  it { with_view { DummyEvent.all.length.must_equal 1 } }
-  it { with_view { DummyEvent.pluck(:_dtstart).must_equal 7.times.map{ |i| start_date + (i-1).day } } }
+  it { with_view { DummyEvent.where(id: event.id).for_date_time_range(start_date, end_date).count.must_equal 5 } }
 
   private
 
