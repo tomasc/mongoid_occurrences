@@ -8,6 +8,8 @@ describe 'Queries for events' do
 
   before { dummy_event.save! }
 
-  it { DummyEvent.all.length.must_equal 1 }
-  it { DummyEvent.with_occurrences_view { DummyEvent.pluck(:_dtstart).must_equal [start_date, (start_date + 1.day).beginning_of_day, (start_date + 2.day).beginning_of_day, (start_date + 3.day).beginning_of_day, (start_date + 4.day).beginning_of_day, (start_date + 5.day).beginning_of_day, (start_date + 6.day).beginning_of_day] } }
+  DummyEvent.with_occurrences_view do
+    it { DummyEvent.all.length.must_equal 1 }
+    it { DummyEvent.pluck(:_dtstart).must_equal 7.times.map{ |i| start_date + (i-1).day } }
+  end
 end

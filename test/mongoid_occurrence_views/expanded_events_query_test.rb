@@ -8,6 +8,8 @@ describe 'Queries for Expanded events' do
 
   before { dummy_event.save! }
 
-  it { DummyEvent.all.length.must_equal 1 }
-  it { DummyEvent.with_expanded_occurrences_view { DummyEvent.all.length.must_equal 7 } }
+  DummyEvent.with_expanded_occurrences_view do
+    it { DummyEvent.all.length.must_equal 1 }
+    it { DummyEvent.pluck(:_dtstart).must_equal 7.times.map{ |i| start_date + (i-1).day } }
+  end
 end
