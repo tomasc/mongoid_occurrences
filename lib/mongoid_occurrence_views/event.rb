@@ -22,11 +22,11 @@ module MongoidOccurrenceViews
       end
 
       def with_expanded_occurrences_view(&block)
-        criteria.with(collection: expanded_occurrences_view_name) { block }
+        criteria.with(collection: expanded_occurrences_view_name, &block)
       end
 
       def with_occurrences_view(&block)
-        criteria.with(collection: occurrences_view_name) { block }
+        criteria.with(collection: occurrences_view_name, &block)
       end
     end
   end
