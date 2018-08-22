@@ -1,6 +1,3 @@
-require 'mongoid_occurrence_views/event/create_occurrence_view'
-require 'mongoid_occurrence_views/event/create_expanded_occurrence_view'
-
 module MongoidOccurrenceViews
   module Event
     def self.included(base)
@@ -12,8 +9,8 @@ module MongoidOccurrenceViews
         embeds_many :occurrences, class_name: options.fetch(:class_name)
         accepts_nested_attributes_for :occurrences, allow_destroy: true
 
-        create_occurrences_view
-        create_expanded_occurrences_view
+        CreateOccurrencesView.call(self)
+        CreateExpandedOccurrencesView.call(self)
       end
 
       def occurrences_view_name
@@ -30,16 +27,6 @@ module MongoidOccurrenceViews
 
       def with_occurrences_view(&block)
         criteria.with(collection: occurrences_view_name) { block }
-      end
-
-      private
-
-      def create_occurrences_view
-        MongoidOccurrenceViews::Event::CreateOccurrencesView.call(self)
-      end
-
-      def create_expanded_occurrences_view
-        MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView.call(self)
       end
     end
   end

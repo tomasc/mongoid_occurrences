@@ -1,5 +1,3 @@
-require 'mongoid'
-
 module MongoidOccurrenceViews
   module Event
     class CreateExpandedOccurrencesView

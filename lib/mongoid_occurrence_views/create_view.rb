@@ -1,5 +1,3 @@
-require 'mongoid'
-
 module MongoidOccurrenceViews
   class CreateView < Struct.new(:view_name, :view_on, :pipeline)
     def self.call(*args)
