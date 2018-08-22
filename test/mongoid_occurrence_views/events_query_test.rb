@@ -14,6 +14,6 @@ describe 'Queries for events' do
   private
 
   def with_view(&block)
-    DummyEvent.with_occurrences_view &block
+    DummyEvent.with_occurrences_view(&block)
   end
 end
