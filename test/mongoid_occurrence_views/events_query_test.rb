@@ -8,8 +8,12 @@ describe 'Queries for events' do
 
   before { dummy_event.save! }
 
-  DummyEvent.with_occurrences_view do
-    it { DummyEvent.all.length.must_equal 1 }
-    it { DummyEvent.pluck(:_dtstart).must_equal 7.times.map{ |i| start_date + (i-1).day } }
+  it { with_view { DummyEvent.all.length.must_equal 1 } }
+  it { with_view { DummyEvent.pluck(:_dtstart).must_equal 7.times.map{ |i| start_date + (i-1).day } } }
+
+  private
+
+  def with_view(&block)
+    DummyEvent.with_occurrences_view &block
   end
 end
