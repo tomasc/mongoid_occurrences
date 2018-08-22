@@ -8,14 +8,16 @@ require 'minitest/spec'
 
 require 'mongoid_occurrence_views'
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
-
 Mongoid.configure do |config|
   config.connect_to('mongoid_occurrence_views_test')
 end
 
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
+
 DatabaseCleaner.orm = :mongoid
-DatabaseCleaner.strategy = :truncation
+DatabaseCleaner.strategy = :truncation, {
+  except: [DummyEvent.occurrences_view_name, DummyEvent.expanded_occurrences_view_name]
+}
 
 class MiniTest::Spec
   before(:each) { DatabaseCleaner.clean }
