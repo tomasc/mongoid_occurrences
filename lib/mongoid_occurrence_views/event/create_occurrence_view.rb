@@ -1,8 +1,6 @@
 module MongoidOccurrenceViews
   module Event
     class CreateOccurrencesView
-      attr_accessor :klass
-
       def initialize(klass)
         @klass = klass
       end
@@ -12,22 +10,16 @@ module MongoidOccurrenceViews
       end
 
       def call
-        MongoidOccurrenceViews::CreateView.call(
-          name: view_name,
-          collection: collection,
+        CreateView.call(
+          name: klass.occurrences_view_name,
+          collection: klass.collection.name,
           pipeline: pipeline
         )
       end
 
       private
 
-      def view_name
-        klass.occurrences_view_name
-      end
-
-      def collection
-        klass.collection.name
-      end
+      attr_reader :klass
 
       def pipeline
         [
