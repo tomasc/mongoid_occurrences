@@ -32,6 +32,14 @@ describe 'Queries for Expanded events' do
 
       it { with_view { DummyEvent.all.length.must_equal 5 } }
       it { with_view { DummyEvent.pluck(:_dtstart).must_equal [start_date].push(4.times.map{ |i| (start_date + (i+1).day).beginning_of_day }).flatten } }
+
+      describe 'all_day' do
+        let(:all_day) { true }
+
+        it { with_view { DummyEvent.all.length.must_equal 5 } }
+        it { with_view { DummyEvent.pluck(:_dtstart).must_equal 5.times.map{ |i| (start_date + i.day).beginning_of_day } } }
+        it { with_view { DummyEvent.pluck(:_dtend).must_equal 5.times.map{ |i| (start_date + i.day).end_of_day } } }
+      end
     end
   end
 
@@ -42,6 +50,26 @@ describe 'Queries for Expanded events' do
 
     it { with_view { DummyEvent.all.length.must_equal 7 } }
     it { with_view { DummyEvent.pluck(:_dtstart).must_equal 7.times.map{ |i| start_date + i.day } } }
+
+    describe 'all_day' do
+      let(:all_day) { true }
+
+      it { with_view { DummyEvent.all.length.must_equal 7 } }
+      it { with_view { DummyEvent.pluck(:_dtstart).must_equal 7.times.map{ |i| (start_date + i.day).beginning_of_day } } }
+      it { with_view { DummyEvent.pluck(:_dtend).must_equal 7.times.map{ |i| (start_date + i.day).end_of_day } } }
+    end
+  end
+
+  describe 'with multiple occurrences' do
+    let(:start_date) { DateTime.parse('20/08/2018 10:00 +0200') }
+    let(:end_date) { DateTime.parse('20/08/2018 21:00 +0200') }
+    let(:second_start_date) { DateTime.parse('21/08/2018 10:00 +0200') }
+    let(:second_end_date) { DateTime.parse('24/08/2018 12:00 +0200') }
+    let(:second_occurrence) { DummyOccurrence.new(dtstart: second_start_date, dtend: second_end_date, all_day: all_day, schedule: schedule) }
+    let(:event) { DummyEvent.new(occurrences: [occurrence, second_occurrence]) }
+
+    it { with_view { DummyEvent.all.length.must_equal 5 } }
+    it { with_view { DummyEvent.pluck(:_dtstart).must_equal [ start_date, second_start_date, (second_start_date + 1.day).beginning_of_day, (second_start_date + 2.day).beginning_of_day, (second_start_date + 3.day).beginning_of_day ] } }
   end
 
   private
