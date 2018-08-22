@@ -9,6 +9,22 @@ module MongoidOccurrenceViews
         embeds_many :occurrences, class_name: options.fetch(:class_name)
         accepts_nested_attributes_for :occurrences, allow_destroy: true
 
+        scope :for_date_time, -> (date_time) {
+          MongoidOccurrenceViews::Event::ForDateTime.call(self, date_time)
+        }
+
+        scope :for_date_time_range, ->(dtstart, dtend) {
+          MongoidOccurrenceViews::Event::ForDateTimeRange.call(self, dtstart, dtend)
+        }
+
+        scope :from_date_time, ->(date_time) {
+          MongoidOccurrenceViews::Event::FromDateTime.call(self, date_time)
+        }
+
+        scope :to_date_time, ->(date_time) {
+          MongoidOccurrenceViews::Event::ToDateTime.call(self, date_time)
+        }
+
         CreateOccurrencesView.call(self)
         CreateExpandedOccurrencesView.call(self)
       end
