@@ -1,3 +1,6 @@
+require 'mongoid_occurrence_views/event/create_occurrence_view'
+require 'mongoid_occurrence_views/event/create_expanded_occurrence_view'
+
 module MongoidOccurrenceViews
   module Event
     def self.included(base)
@@ -9,8 +12,8 @@ module MongoidOccurrenceViews
         embeds_many :occurrences, class_name: options.fetch(:class_name)
         accepts_nested_attributes_for :occurrences, allow_destroy: true
 
-        create_occurrence_view
-        create_expanded_occurrence_view
+        create_occurrences_view
+        create_expanded_occurrences_view
       end
 
       def occurrences_view_name
@@ -31,40 +34,12 @@ module MongoidOccurrenceViews
 
       private
 
-      def create_occurrence_view
-        MongoidOccurrenceViews::CreateView.call(
-          occurrences_view_name,
-          collection.name,
-          [
-            { '$addFields': {
-              '_sort_key': {
-                '$ifNull': [
-                  { '$min': { '$filter': { 'input': { '$arrayElemAt': ['$occurrences.daily_occurrences.ds', 0] }, 'as': 'dtstart', 'cond': { '$gte': ['$$dtstart', 'new Date()'] } } } },
-                  { '$max': { '$filter': { 'input': { '$arrayElemAt': ['$occurrences.daily_occurrences.ds', 0] }, 'as': 'dtstart', 'cond': { '$lt': ['$$dtstart', 'new Date()'] } } } }
-                  ]
-                }
-              }
-            }
-          ]
-        )
+      def create_occurrences_view
+        MongoidOccurrenceViews::Event::CreateOccurrencesView.call(self)
       end
 
-      def create_expanded_occurrence_view
-        MongoidOccurrenceViews::CreateView.call(
-          expanded_occurrences_view_name,
-          collection.name,
-          [
-            { '$addFields': { '_occurrences': '$occurrences' } },
-            { '$unwind': '$_occurrences' },
-            { '$unwind': '$_occurrences.daily_occurrences' },
-            { '$addFields': {
-                '_dtstart': '$_occurrences.daily_occurrences.ds',
-                '_dtend': '$_occurrences.daily_occurrences.de',
-                '_sort_key': '$_occurrences.daily_occurrences.ds'
-              }
-            }
-          ]
-        )
+      def create_expanded_occurrences_view
+        MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView.call(self)
       end
     end
   end
