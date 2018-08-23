@@ -1,6 +1,6 @@
 module MongoidOccurrenceViews
   module Event
-    class ForDateTime
+    class ForDateTime < Query
       def initialize(klass, date_time)
         @klass = klass
         @date_time = date_time
