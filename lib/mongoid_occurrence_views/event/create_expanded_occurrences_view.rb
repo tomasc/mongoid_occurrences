@@ -27,9 +27,9 @@ module MongoidOccurrenceViews
           { '$unwind': '$_occurrences' },
           { '$unwind': '$_occurrences.daily_occurrences' },
           { '$addFields': {
-              '_dtstart': '$_occurrences.daily_occurrences.ds',
-              '_dtend': '$_occurrences.daily_occurrences.de',
-              '_sort_key': '$_occurrences.daily_occurrences.ds'
+            '_dtstart': '$_occurrences.daily_occurrences.ds',
+            '_dtend': '$_occurrences.daily_occurrences.de',
+            '_sort_key': '$_occurrences.daily_occurrences.ds'
             }
           }
         ]
