@@ -16,7 +16,12 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 DatabaseCleaner.orm = :mongoid
 DatabaseCleaner.strategy = :truncation, {
-  except: [DummyEvent.occurrences_view_name, DummyEvent.expanded_occurrences_view_name]
+  except: [
+    DummyEvent.occurrences_view_name,
+    DummyEvent.expanded_occurrences_view_name,
+    DummyOwner.occurrences_view_name,
+    DummyOwner.expanded_occurrences_view_name
+  ]
 }
 
 class MiniTest::Spec
@@ -24,6 +29,10 @@ class MiniTest::Spec
   after(:all) do
     MongoidOccurrenceViews::DestroyView.call(name: DummyEvent.occurrences_view_name)
     MongoidOccurrenceViews::DestroyView.call(name: DummyEvent.expanded_occurrences_view_name)
+    MongoidOccurrenceViews::DestroyView.call(name: DummyOwner.occurrences_view_name)
+    MongoidOccurrenceViews::DestroyView.call(name: DummyOwner.expanded_occurrences_view_name)
+    MongoidOccurrenceViews::Event::CreateOccurrencesView.call(DummyEvent)
+    MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView.call(DummyEvent)
   end
 end
 
