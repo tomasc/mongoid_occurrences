@@ -11,8 +11,8 @@ module MongoidOccurrenceViews
     def call
       Mongoid.clients.each do |client_name, _|
         client = Mongoid.client(client_name)
-        next if client.collections.map(&:name).include?(name)
-        client.command(destroy: name)
+        next unless client.collections.map(&:name).include?(name)
+        client.command(drop: name)
       end
     end
 
