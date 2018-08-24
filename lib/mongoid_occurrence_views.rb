@@ -16,3 +16,9 @@ require 'mongoid_occurrence_views/event/from_date_time'
 require 'mongoid_occurrence_views/event/to_date_time'
 require 'mongoid_occurrence_views/has_occurrence_views'
 require 'mongoid_occurrence_views/occurrence'
+
+module MongoidOccurrenceViews
+  def self.event_classes
+    ObjectSpace.each_object(Class).select { |c| c.included_modules.include? MongoidOccurrenceViews::Event }
+  end
+end
