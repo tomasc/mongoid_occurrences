@@ -8,18 +8,14 @@ describe MongoidOccurrenceViews::Event::Occurrence do
 
   let(:occurrence) { Occurrence.new(dtstart: start_date, dtend: end_date, all_day: all_day, schedule: schedule) }
 
-  describe 'fields' do
-    it { occurrence.must_respond_to :dtstart }
-    it { occurrence.must_respond_to :dtend }
-    it { occurrence.must_respond_to :all_day }
-    it { occurrence.must_respond_to :all_day? }
-    it { occurrence.must_respond_to :schedule }
-  end
+  it { occurrence.must_respond_to :dtstart }
+  it { occurrence.must_respond_to :dtend }
+  it { occurrence.must_respond_to :all_day }
+  it { occurrence.must_respond_to :all_day? }
+  it { occurrence.must_respond_to :schedule }
 
-  describe 'relations' do
-    it { occurrence.must_respond_to :event }
-    it { occurrence.must_respond_to :daily_occurrences }
-  end
+  it { occurrence.must_respond_to :event }
+  it { occurrence.must_respond_to :daily_occurrences }
 
   describe 'all_day' do
     describe 'when dtstart & dtend set to beginning & end of day' do
