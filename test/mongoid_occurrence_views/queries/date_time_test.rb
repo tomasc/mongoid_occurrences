@@ -1,101 +1,111 @@
 require 'test_helper'
 
-describe 'Querying Events' do
-  let(:query) { MongoidOccurrenceViews::Queries::DateTime.criteria(Event, query_date_time) }
-  let(:wrong_query) { MongoidOccurrenceViews::Queries::DateTime.criteria(Event, query_date_time - 1.year) }
+describe MongoidOccurrenceViews::Queries::DateTime do
+  let(:today) { DateTime.now.beginning_of_day }
 
-  before { event.save! }
+  describe 'Querying Events' do
+    let(:query) { subject.criteria(Event, query_date_time) }
+    let(:query_with_no_match) { subject.criteria(Event, query_date_time - 1.year) }
 
-  describe 'spanning one day' do
-    let(:event) { build(:event, :today) }
-    let(:query_date_time) { DateTime.now.beginning_of_day + 5.hours }
+    before { event.save! }
 
-    it { query.count.must_equal 1 }
-    it { wrong_query.count.must_equal 0 }
-    it { within_expanded_occurrences { query.count.must_equal 1 } }
-    it { within_expanded_occurrences { wrong_query.count.must_equal 0 } }
-    # it { within_occurrences { query.count.must_equal 1 } }
+    describe 'spanning one day' do
+      let(:event) { build(:event, :today) }
+      let(:query_date_time) { today + 5.hours }
+
+      it { query.count.must_equal 1 }
+      it { query_with_no_match.count.must_equal 0 }
+
+      it { within_expanded_occurrences { query.count.must_equal 1 } }
+      it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
+      # it { within_occurrences { query.count.must_equal 1 } }
+    end
+
+    describe 'spanning multiple days' do
+      let(:event) { build(:event, :today_until_tomorrow) }
+      let(:query_date_time) { today + 1.day }
+
+      it { query.count.must_equal 1 }
+      it { query_with_no_match.count.must_equal 0 }
+
+      it { within_expanded_occurrences { query.count.must_equal 1 } }
+      it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
+      # it { within_occurrences { query.count.must_equal 1 } }
+    end
+
+    describe 'recurring' do
+      let(:event) { build(:event, :recurring_daily_this_week) }
+      let(:query_date_time) { today + 2.days }
+
+      it { query.count.must_equal 1 }
+      it { query_with_no_match.count.must_equal 0 }
+
+      it { within_expanded_occurrences { query.count.must_equal 1 } }
+      it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
+      # it { within_occurrences { query.count.must_equal 1 } }
+    end
+
+    private
+
+    def within_occurrences(&block)
+      Event.within_occurrences(&block)
+    end
+
+    def within_expanded_occurrences(&block)
+      Event.within_expanded_occurrences(&block)
+    end
   end
 
-  describe 'spanning multiple days' do
-    let(:event) { build(:event, :today_until_tomorrow) }
-    let(:query_date_time) { DateTime.now.beginning_of_day + 1.day }
+  describe 'Querying Parent with Embedded Events' do
+    let(:query) { subject.criteria(EventParent, query_date_time) }
+    let(:query_with_no_match) { subject.criteria(Event, query_date_time - 1.year) }
 
-    it { query.count.must_equal 1 }
-    it { wrong_query.count.must_equal 0 }
-    it { within_expanded_occurrences { query.count.must_equal 1 } }
-    it { within_expanded_occurrences { wrong_query.count.must_equal 0 } }
-    # it { within_occurrences { query.count.must_equal 1 } }
-  end
+    before { event_parent.save! }
 
-  describe 'recurring' do
-    let(:event) { build(:event, :recurring_daily_this_week) }
-    let(:query_date_time) { DateTime.now.beginning_of_day + 2.days }
+    describe 'spanning one day' do
+      let(:event_parent) { build(:event_parent, :today) }
+      let(:query_date_time) { today + 5.hours }
 
-    it { query.count.must_equal 1 }
-    it { wrong_query.count.must_equal 0 }
-    it { within_expanded_occurrences { query.count.must_equal 1 } }
-    it { within_expanded_occurrences { wrong_query.count.must_equal 0 } }
-    # it { within_occurrences { query.count.must_equal 1 } }
-  end
+      it { query.count.must_equal 0 }
+      it { query_with_no_match.count.must_equal 0 }
 
-  private
+      it { within_expanded_occurrences { query.count.must_equal 1 } }
+      it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
+      # it { within_occurrences { query.count.must_equal 1 } }
+    end
 
-  def within_occurrences(&block)
-    Event.within_occurrences(&block)
-  end
+    describe 'spanning multiple days' do
+      let(:event_parent) { build(:event_parent, :today_until_tomorrow) }
+      let(:query_date_time) { today + 1.day }
 
-  def within_expanded_occurrences(&block)
-    Event.within_expanded_occurrences(&block)
-  end
-end
+      it { query.count.must_equal 0 }
+      it { query_with_no_match.count.must_equal 0 }
 
-describe 'Querying Parent with Embedded Events' do
-  let(:query) { MongoidOccurrenceViews::Queries::DateTime.criteria(EventParent, query_date_time) }
-  let(:wrong_query) { MongoidOccurrenceViews::Queries::DateTime.criteria(Event, query_date_time - 1.year) }
+      it { within_expanded_occurrences { query.count.must_equal 1 } }
+      it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
+      # it { within_occurrences { query.count.must_equal 1 } }
+    end
 
-  before { event_parent.save! }
+    describe 'recurring' do
+      let(:event_parent) { build(:event_parent, :recurring_daily_this_week) }
+      let(:query_date_time) { today + 3.days }
 
-  describe 'spanning one day' do
-    let(:event_parent) { build(:event_parent, :today) }
-    let(:query_date_time) { DateTime.now.beginning_of_day + 5.hours }
+      it { query.count.must_equal 0 }
+      it { query_with_no_match.count.must_equal 0 }
 
-    it { query.count.must_equal 0 }
-    it { wrong_query.count.must_equal 0 }
-    it { within_expanded_occurrences { query.count.must_equal 1 } }
-    it { within_expanded_occurrences { wrong_query.count.must_equal 0 } }
-    # it { within_occurrences { query.count.must_equal 1 } }
-  end
+      it { within_expanded_occurrences { query.count.must_equal 1 } }
+      it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
+      # it { within_occurrences { query.count.must_equal 1 } }
+    end
 
-  describe 'spanning multiple days' do
-    let(:event_parent) { build(:event_parent, :today_until_tomorrow) }
-    let(:query_date_time) { DateTime.now.beginning_of_day + 1.day }
+    private
 
-    it { query.count.must_equal 0 }
-    it { wrong_query.count.must_equal 0 }
-    it { within_expanded_occurrences { query.count.must_equal 1 } }
-    it { within_expanded_occurrences { wrong_query.count.must_equal 0 } }
-    # it { within_occurrences { query.count.must_equal 1 } }
-  end
+    def within_occurrences(&block)
+      EventParent.within_occurrences(&block)
+    end
 
-  describe 'recurring' do
-    let(:event_parent) { build(:event_parent, :recurring_daily_this_week) }
-    let(:query_date_time) { DateTime.now.beginning_of_day + 3.days }
-
-    it { query.count.must_equal 0 }
-    it { wrong_query.count.must_equal 0 }
-    it { within_expanded_occurrences { query.count.must_equal 1 } }
-    it { within_expanded_occurrences { wrong_query.count.must_equal 0 } }
-    # it { within_occurrences { query.count.must_equal 1 } }
-  end
-
-  private
-
-  def within_occurrences(&block)
-    EventParent.within_occurrences(&block)
-  end
-
-  def within_expanded_occurrences(&block)
-    EventParent.within_expanded_occurrences(&block)
+    def within_expanded_occurrences(&block)
+      EventParent.within_expanded_occurrences(&block)
+    end
   end
 end

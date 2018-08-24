@@ -28,8 +28,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'coveralls'
   spec.add_development_dependency 'database_cleaner'
   spec.add_development_dependency 'factory_bot', '~> 4.0'
-  spec.add_development_dependency 'guard-minitest'
   spec.add_development_dependency 'guard'
+  spec.add_development_dependency 'guard-minitest'
   spec.add_development_dependency 'minitest', '~> 5.0'
+  spec.add_development_dependency 'minitest-implicit-subject'
   spec.add_development_dependency 'rake', '~> 10.0'
 end

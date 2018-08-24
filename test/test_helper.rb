@@ -3,6 +3,7 @@ $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'bundler/setup'
 require 'database_cleaner'
 require 'minitest'
+require 'minitest-implicit-subject'
 require 'minitest/autorun'
 require 'minitest/spec'
 require 'factory_bot'
