@@ -19,7 +19,7 @@ describe 'Querying Events' do
 
   describe 'spanning multiple days' do
     let(:event) { build(:event, :today_until_tomorrow) }
-    let(:query_date_time) { event.occurrences.first.dtstart + 1.day }
+    let(:query_date_time) { DateTime.now.beginning_of_day + 1.day }
 
     it { query.count.must_equal 1 }
     it { wrong_query.count.must_equal 0 }
