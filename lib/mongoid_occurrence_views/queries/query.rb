@@ -9,13 +9,13 @@ module MongoidOccurrenceViews
         new(*args).criteria
       end
 
-      private
-
-      attr_reader :klass
-
       def criteria
         raise NotImplementedError
       end
+
+      private
+
+      attr_reader :klass
 
       def dtstart_field
         within_view? ? '_dtstart' : 'occurrences.daily_occurrences.ds'
