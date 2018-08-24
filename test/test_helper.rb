@@ -30,15 +30,16 @@ DatabaseCleaner.strategy = :truncation, {
 
 class MiniTest::Spec
   before(:each) { DatabaseCleaner.clean }
-  # after(:all) do
-  #   MongoidOccurrenceViews::DestroyMongodbView.call(name: Event.occurrences_view_name)
-  #   MongoidOccurrenceViews::DestroyMongodbView.call(name: Event.expanded_occurrences_view_name)
-  #   MongoidOccurrenceViews::DestroyMongodbView.call(name: EventParent.occurrences_view_name)
-  #   MongoidOccurrenceViews::DestroyMongodbView.call(name: EventParent.expanded_occurrences_view_name)
-  #   MongoidOccurrenceViews::Event::CreateOccurrencesView.call(Event)
-  #   MongoidOccurrenceViews::CreateExpandedOccurrencesView.call(Event)
-  #   MongoidOccurrenceViews::CreateExpandedOccurrencesView.call(EventParent)
-  # end
+  after(:all) do
+    MongoidOccurrenceViews::DestroyMongodbView.call(name: Event.occurrences_view_name)
+    MongoidOccurrenceViews::DestroyMongodbView.call(name: Event.expanded_occurrences_view_name)
+    MongoidOccurrenceViews::DestroyMongodbView.call(name: EventParent.occurrences_view_name)
+    MongoidOccurrenceViews::DestroyMongodbView.call(name: EventParent.expanded_occurrences_view_name)
+    MongoidOccurrenceViews::Event::CreateOccurrencesView.call(Event)
+    MongoidOccurrenceViews::Event::CreateOccurrencesView.call(EventParent)
+    MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView.call(Event)
+    MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView.call(EventParent)
+  end
 end
 
 Mongoid.logger.level = Logger::INFO
