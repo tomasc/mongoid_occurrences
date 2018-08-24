@@ -19,7 +19,7 @@ module MongoidOccurrenceViews
     def pipeline
       [
         add_base_relation_fields,
-        unwinds,
+        unwind_relations,
         add_date_and_sort_key_fields
       ].flatten
     end
@@ -41,7 +41,7 @@ module MongoidOccurrenceViews
       }
     end
 
-    def unwinds
+    def unwind_relations
       chained_relations.map { |chain| { '$unwind': "$_#{chain}" } }
     end
 
