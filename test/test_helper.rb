@@ -33,6 +33,7 @@ class MiniTest::Spec
     MongoidOccurrenceViews::DestroyView.call(name: DummyOwner.expanded_occurrences_view_name)
     MongoidOccurrenceViews::Event::CreateOccurrencesView.call(DummyEvent)
     MongoidOccurrenceViews::CreateExpandedOccurrencesView.call(DummyEvent)
+    MongoidOccurrenceViews::CreateExpandedOccurrencesView.call(DummyOwner)
   end
 end
 
