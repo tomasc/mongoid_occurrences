@@ -1,12 +1,12 @@
 require 'test_helper'
 
-describe MongoidOccurrenceViews::Occurrence do
+describe MongoidOccurrenceViews::Event::Occurrence do
   let(:start_date) { DateTime.parse('20/08/2018 10:00 +0200') }
   let(:end_date) { DateTime.parse('20/08/2018 21:00 +0200') }
   let(:all_day) { false }
   let(:schedule) { nil }
 
-  let(:occurrence) { DummyOccurrence.new(dtstart: start_date, dtend: end_date, all_day: all_day, schedule: schedule) }
+  let(:occurrence) { Occurrence.new(dtstart: start_date, dtend: end_date, all_day: all_day, schedule: schedule) }
 
   describe 'fields' do
     it { occurrence.must_respond_to :dtstart }

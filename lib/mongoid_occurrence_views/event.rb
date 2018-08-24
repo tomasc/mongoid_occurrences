@@ -2,7 +2,7 @@ module MongoidOccurrenceViews
   module Event
     def self.included(base)
       base.class_eval do
-        include MongoidOccurrenceViews::HasOccurrenceViews
+        include HasViewsOnOccurrences
       end
       base.extend ClassMethods
     end
@@ -12,24 +12,13 @@ module MongoidOccurrenceViews
         embeds_many :occurrences, class_name: options.fetch(:class_name)
         accepts_nested_attributes_for :occurrences, allow_destroy: true
 
-        scope :for_date_time, -> (date_time) {
-          ForDateTime.call(self, date_time)
-        }
-
-        scope :for_date_time_range, ->(dtstart, dtend) {
-          ForDateTimeRange.call(self, dtstart, dtend)
-        }
-
-        scope :from_date_time, ->(date_time) {
-          FromDateTime.call(self, date_time)
-        }
-
-        scope :to_date_time, ->(date_time) {
-          ToDateTime.call(self, date_time)
-        }
+        scope :for_date_time, -> (date_time) { MongoidOccurrenceViews::Queries::DateTime.criteria(self, date_time) }
+        scope :for_date_time_range, ->(dtstart, dtend) { MongoidOccurrenceViews::Queries::DateTimeRange.criteria(self, dtstart, dtend) }
+        scope :from_date_time, ->(date_time) { MongoidOccurrenceViews::Queries::FromDateTime.criteria(self, date_time) }
+        scope :to_date_time, ->(date_time) { MongoidOccurrenceViews::Queries::ToDateTime.criteria(self, date_time) }
 
         CreateOccurrencesView.call(self)
-        create_occurrence_views
+        CreateExpandedOccurrencesView.call(self)
       end
     end
   end

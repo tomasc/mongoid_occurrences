@@ -10,7 +10,7 @@ module MongoidOccurrenceViews
       end
 
       def call
-        CreateView.call(
+        CreateMongoidView.call(
           name: klass.occurrences_view_name,
           collection: klass.collection.name,
           pipeline: pipeline

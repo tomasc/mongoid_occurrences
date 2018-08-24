@@ -1,16 +1,12 @@
 module MongoidOccurrenceViews
-  module Event
+  module Queries
     class Query
       def initialize(klass)
         @klass = klass
       end
 
-      def self.call(*args)
-        new(*args).call
-      end
-
-      def call
-        criteria
+      def self.criteria(*args)
+        new(*args).criteria
       end
 
       private
@@ -22,18 +18,18 @@ module MongoidOccurrenceViews
       end
 
       def dtstart_field
-        inside_view? ? :_dtstart : :'occurrences.daily_occurrences.ds'
+        within_view? ? '_dtstart' : 'occurrences.daily_occurrences.ds'
       end
 
       def dtend_field
-        inside_view? ? :_dtend : :'occurrences.daily_occurrences.de'
+        within_view? ? '_dtend' : 'occurrences.daily_occurrences.de'
       end
 
       def base_class_criteria
         klass.criteria
       end
 
-      def inside_view?
+      def within_view?
         klass.collection.name =~ /occurrences_view/i
       end
     end
