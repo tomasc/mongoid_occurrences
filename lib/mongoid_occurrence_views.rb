@@ -6,7 +6,6 @@ require 'mongoid_ice_cube_extension'
 require 'mongoid_occurrence_views/create_mongoid_view'
 require 'mongoid_occurrence_views/destroy_mongoid_view'
 
-
 require 'mongoid_occurrence_views/event'
 require 'mongoid_occurrence_views/event/occurrence'
 
