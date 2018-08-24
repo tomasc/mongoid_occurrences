@@ -24,7 +24,7 @@ describe MongoidOccurrenceViews::Queries::FromDateTime do
 
     describe 'spanning multiple days' do
       let(:event) { build(:event, :today_until_tomorrow) }
-      let(:query_date_time) { today + 1.day }
+      let(:query_date_time) { today }
 
       it { query.count.must_equal 1 }
       it { query_with_no_match.count.must_equal 0 }
@@ -76,7 +76,7 @@ describe MongoidOccurrenceViews::Queries::FromDateTime do
 
     describe 'spanning multiple days' do
       let(:event_parent) { build(:event_parent, :today_until_tomorrow) }
-      let(:query_date_time) { today + 1.day }
+      let(:query_date_time) { today }
 
       it { query.count.must_equal 0 }
       it { query_with_no_match.count.must_equal 0 }

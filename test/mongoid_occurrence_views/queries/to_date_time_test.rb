@@ -29,7 +29,7 @@ describe MongoidOccurrenceViews::Queries::ToDateTime do
       it { query.count.must_equal 1 }
       it { query_with_no_match.count.must_equal 0 }
 
-      it { within_expanded_occurrences { query.count.must_equal 1 } }
+      it { within_expanded_occurrences { query.count.must_equal 2 } }
       it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
       # it { within_occurrences { query.count.must_equal 1 } }
     end
@@ -81,7 +81,7 @@ describe MongoidOccurrenceViews::Queries::ToDateTime do
       it { query.count.must_equal 0 }
       it { query_with_no_match.count.must_equal 0 }
 
-      it { within_expanded_occurrences { query.count.must_equal 1 } }
+      it { within_expanded_occurrences { query.count.must_equal 2 } }
       it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
       # it { within_occurrences { query.count.must_equal 1 } }
     end
