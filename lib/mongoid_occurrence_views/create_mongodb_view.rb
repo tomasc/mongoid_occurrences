@@ -1,5 +1,5 @@
 module MongoidOccurrenceViews
-  class CreateMongoidView
+  class CreateMongodbView
     def initialize(name:, collection:, pipeline:)
       @name = name
       @collection = collection

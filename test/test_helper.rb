@@ -31,10 +31,10 @@ DatabaseCleaner.strategy = :truncation, {
 class MiniTest::Spec
   before(:each) { DatabaseCleaner.clean }
   # after(:all) do
-  #   MongoidOccurrenceViews::DestroyMongoidView.call(name: Event.occurrences_view_name)
-  #   MongoidOccurrenceViews::DestroyMongoidView.call(name: Event.expanded_occurrences_view_name)
-  #   MongoidOccurrenceViews::DestroyMongoidView.call(name: EventParent.occurrences_view_name)
-  #   MongoidOccurrenceViews::DestroyMongoidView.call(name: EventParent.expanded_occurrences_view_name)
+  #   MongoidOccurrenceViews::DestroyMongodbView.call(name: Event.occurrences_view_name)
+  #   MongoidOccurrenceViews::DestroyMongodbView.call(name: Event.expanded_occurrences_view_name)
+  #   MongoidOccurrenceViews::DestroyMongodbView.call(name: EventParent.occurrences_view_name)
+  #   MongoidOccurrenceViews::DestroyMongodbView.call(name: EventParent.expanded_occurrences_view_name)
   #   MongoidOccurrenceViews::Event::CreateOccurrencesView.call(Event)
   #   MongoidOccurrenceViews::CreateExpandedOccurrencesView.call(Event)
   #   MongoidOccurrenceViews::CreateExpandedOccurrencesView.call(EventParent)

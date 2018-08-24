@@ -13,7 +13,7 @@ class EventParent
   # }
   #
   # # NOTE: this stuff below should be automatico, right?
-  # MongoidOccurrenceViews::CreateMongoidView.call(
+  # MongoidOccurrenceViews::CreateMongodbView.call(
   #     name: expanded_occurrences_view_name,
   #     collection: collection.name,
   #     pipeline: [

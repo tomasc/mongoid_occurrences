@@ -3,8 +3,8 @@ require 'mongoid_occurrence_views/version'
 require 'mongoid'
 require 'mongoid_ice_cube_extension'
 
-require 'mongoid_occurrence_views/create_mongoid_view'
-require 'mongoid_occurrence_views/destroy_mongoid_view'
+require 'mongoid_occurrence_views/create_mongodb_view'
+require 'mongoid_occurrence_views/destroy_mongodb_view'
 
 require 'mongoid_occurrence_views/event'
 require 'mongoid_occurrence_views/event/occurrence'

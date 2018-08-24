@@ -1,5 +1,5 @@
 module MongoidOccurrenceViews
-  class DestroyMongoidView
+  class DestroyMongodbView
     def initialize(name:)
       @name = name
     end
