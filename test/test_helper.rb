@@ -5,6 +5,7 @@ require 'database_cleaner'
 require 'minitest'
 require 'minitest/autorun'
 require 'minitest/spec'
+require 'factory_bot'
 
 require 'mongoid_occurrence_views'
 
@@ -29,6 +30,9 @@ DatabaseCleaner.strategy = :truncation, {
 }
 
 class MiniTest::Spec
+  include FactoryBot::Syntax::Methods
+  FactoryBot.definition_file_paths = [File.expand_path('../factories', __FILE__)]
+  FactoryBot.find_definitions
   before(:each) { DatabaseCleaner.clean }
   after(:all) do
     MongoidOccurrenceViews::DestroyMongodbView.call(name: Event.occurrences_view_name)
