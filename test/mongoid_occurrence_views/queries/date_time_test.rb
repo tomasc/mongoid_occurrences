@@ -2,10 +2,11 @@ require 'test_helper'
 
 describe MongoidOccurrenceViews::Queries::DateTime do
   let(:today) { DateTime.now.beginning_of_day }
+  let(:query) { subject.criteria(klass, query_date_time) }
+  let(:query_with_no_match) { subject.criteria(klass, query_date_time - 1.year) }
 
   describe 'Querying Events' do
-    let(:query) { subject.criteria(Event, query_date_time) }
-    let(:query_with_no_match) { subject.criteria(Event, query_date_time - 1.year) }
+    let(:klass) { Event }
 
     before { event.save! }
 
@@ -57,8 +58,7 @@ describe MongoidOccurrenceViews::Queries::DateTime do
   end
 
   describe 'Querying Parent with Embedded Events' do
-    let(:query) { subject.criteria(EventParent, query_date_time) }
-    let(:query_with_no_match) { subject.criteria(Event, query_date_time - 1.year) }
+    let(:klass) { EventParent }
 
     before { event_parent.save! }
 
