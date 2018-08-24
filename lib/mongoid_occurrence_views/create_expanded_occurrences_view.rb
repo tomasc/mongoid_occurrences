@@ -9,17 +9,12 @@ module MongoidOccurrenceViews
     end
 
     def call
-      pipeline
-      # CreateView.call(
-      #   name: klass.expanded_occurrences_view_name,
-      #   collection: klass.collection.name,
-      #   pipeline: pipeline
-      # )
+      CreateView.call(
+        name: klass.expanded_occurrences_view_name,
+        collection: klass.collection.name,
+        pipeline: pipeline
+      )
     end
-
-    private
-
-    attr_reader :klass
 
     def pipeline
       [
@@ -28,6 +23,10 @@ module MongoidOccurrenceViews
         add_date_and_sort_key_fields
       ].flatten
     end
+
+    private
+
+    attr_reader :klass
 
     def add_base_relation_fields
       { '$addFields': { "_#{relation_chain.first}": "$#{relation_chain.first}" } }

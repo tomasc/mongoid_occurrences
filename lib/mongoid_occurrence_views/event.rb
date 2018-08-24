@@ -29,7 +29,7 @@ module MongoidOccurrenceViews
         }
 
         CreateOccurrencesView.call(self)
-        CreateExpandedOccurrencesView.call(self)
+        create_occurrence_views
       end
     end
   end

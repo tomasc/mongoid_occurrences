@@ -20,6 +20,10 @@ module MongoidOccurrenceViews
       def with_occurrences_view(&block)
         criteria.with collection: occurrences_view_name, &block
       end
+
+      def create_occurrence_views
+        MongoidOccurrenceViews::CreateExpandedOccurrencesView.call(self)
+      end
     end
   end
 end
