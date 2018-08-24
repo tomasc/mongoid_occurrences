@@ -1,5 +1,8 @@
 module MongoidOccurrenceViews
   class CreateExpandedOccurrencesView
+    DTSTART_FIELD = 'ds'.freeze
+    DTEND_FIELD = 'de'.freeze
+
     def initialize(klass)
       @klass = klass
     end
@@ -34,9 +37,9 @@ module MongoidOccurrenceViews
 
     def add_date_and_sort_key_fields
       { '$addFields': {
-        '_dtstart': "$_#{chained_relations.last}.ds",
-        '_dtend': "$_#{chained_relations.last}.de",
-        '_sort_key': "$_#{chained_relations.last}.ds"
+        '_dtstart': "$_#{chained_relations.last}.#{DTSTART_FIELD}",
+        '_dtend': "$_#{chained_relations.last}.#{DTEND_FIELD}",
+        '_sort_key': "$_#{chained_relations.last}.#{DTSTART_FIELD}"
         }
       }
     end
