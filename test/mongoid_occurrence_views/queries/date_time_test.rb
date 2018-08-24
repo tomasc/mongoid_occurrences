@@ -3,11 +3,12 @@ require 'test_helper'
 describe 'Querying Events' do
   let(:start_date) { DateTime.now.beginning_of_day + 4.hours }
   let(:end_date) { start_date + 2.hours }
-  let(:query_date) { start_date }
   let(:all_day) { false }
   let(:schedule) { nil }
   let(:occurrence) { Occurrence.new(dtstart: start_date, dtend: end_date, all_day: all_day, schedule: schedule) }
   let(:event) { Event.new(occurrences: [occurrence]) }
+
+  let(:query_date) { start_date }
   let(:query) { MongoidOccurrenceViews::Queries::DateTime.criteria(Event, query_date) }
 
   before { event.save! }
@@ -53,12 +54,13 @@ end
 describe 'Querying Parent with Embedded Events' do
   let(:start_date) { DateTime.now.beginning_of_day + 4.hours }
   let(:end_date) { start_date + 2.hours }
-  let(:query_date) { start_date }
   let(:all_day) { false }
   let(:schedule) { nil }
   let(:occurrence) { Occurrence.new(dtstart: start_date, dtend: end_date, all_day: all_day, schedule: schedule) }
   let(:embedded_event) { EmbeddedEvent.new(occurrences: [occurrence]) }
   let(:event_parent) { EventParent.new(embedded_events: [embedded_event]) }
+
+  let(:query_date) { start_date }
   let(:query) { MongoidOccurrenceViews::Queries::DateTime.criteria(EventParent, query_date) }
 
   before { event_parent.save! }
