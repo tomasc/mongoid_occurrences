@@ -1,4 +1,4 @@
-require "test_helper"
+require 'test_helper'
 
 describe MongoidOccurrenceViews::Event do
   let(:event) { build(:event, :today) }

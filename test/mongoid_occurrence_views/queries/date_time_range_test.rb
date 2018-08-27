@@ -18,9 +18,9 @@ describe MongoidOccurrenceViews::Queries::DateTimeRange do
       it { query.count.must_equal 1 }
       it { query_with_no_match.count.must_equal 0 }
 
-      it { within_expanded_occurrences { query.count.must_equal 1 } }
-      it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
-      # it { within_occurrences { query.count.must_equal 1 } }
+      it { with_expanded_occurrences_view { query.count.must_equal 1 } }
+      it { with_expanded_occurrences_view { query_with_no_match.count.must_equal 0 } }
+      # it { with_occurrences_ordering_view { query.count.must_equal 1 } }
     end
 
     describe 'spanning multiple days' do
@@ -31,9 +31,9 @@ describe MongoidOccurrenceViews::Queries::DateTimeRange do
       it { query.count.must_equal 1 }
       it { query_with_no_match.count.must_equal 0 }
 
-      it { within_expanded_occurrences { query.count.must_equal 2 } }
-      it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
-      # it { within_occurrences { query.count.must_equal 1 } }
+      it { with_expanded_occurrences_view { query.count.must_equal 2 } }
+      it { with_expanded_occurrences_view { query_with_no_match.count.must_equal 0 } }
+      # it { with_occurrences_ordering_view { query.count.must_equal 1 } }
     end
 
     describe 'recurring' do
@@ -44,19 +44,19 @@ describe MongoidOccurrenceViews::Queries::DateTimeRange do
       it { query.count.must_equal 1 }
       it { query_with_no_match.count.must_equal 0 }
 
-      it { within_expanded_occurrences { query.count.must_equal 5 } }
-      it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
-      # it { within_occurrences { query.count.must_equal 1 } }
+      it { with_expanded_occurrences_view { query.count.must_equal 5 } }
+      it { with_expanded_occurrences_view { query_with_no_match.count.must_equal 0 } }
+      # it { with_occurrences_ordering_view { query.count.must_equal 1 } }
     end
 
     private
 
-    def within_occurrences(&block)
-      Event.within_occurrences(&block)
+    def with_occurrences_ordering_view(&block)
+      Event.with_occurrences_ordering_view(&block)
     end
 
-    def within_expanded_occurrences(&block)
-      Event.within_expanded_occurrences(&block)
+    def with_expanded_occurrences_view(&block)
+      Event.with_expanded_occurrences_view(&block)
     end
   end
 
@@ -73,9 +73,9 @@ describe MongoidOccurrenceViews::Queries::DateTimeRange do
       it { query.count.must_equal 0 }
       it { query_with_no_match.count.must_equal 0 }
 
-      it { within_expanded_occurrences { query.count.must_equal 1 } }
-      it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
-      # it { within_occurrences { query.count.must_equal 1 } }
+      it { with_expanded_occurrences_view { query.count.must_equal 1 } }
+      it { with_expanded_occurrences_view { query_with_no_match.count.must_equal 0 } }
+      # it { with_occurrences_ordering_view { query.count.must_equal 1 } }
     end
 
     describe 'spanning multiple days' do
@@ -86,9 +86,9 @@ describe MongoidOccurrenceViews::Queries::DateTimeRange do
       it { query.count.must_equal 0 }
       it { query_with_no_match.count.must_equal 0 }
 
-      it { within_expanded_occurrences { query.count.must_equal 2 } }
-      it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
-      # it { within_occurrences { query.count.must_equal 1 } }
+      it { with_expanded_occurrences_view { query.count.must_equal 2 } }
+      it { with_expanded_occurrences_view { query_with_no_match.count.must_equal 0 } }
+      # it { with_occurrences_ordering_view { query.count.must_equal 1 } }
     end
 
     describe 'recurring' do
@@ -99,19 +99,19 @@ describe MongoidOccurrenceViews::Queries::DateTimeRange do
       it { query.count.must_equal 0 }
       it { query_with_no_match.count.must_equal 0 }
 
-      it { within_expanded_occurrences { query.count.must_equal 5 } }
-      it { within_expanded_occurrences { query_with_no_match.count.must_equal 0 } }
-      # it { within_occurrences { query.count.must_equal 1 } }
+      it { with_expanded_occurrences_view { query.count.must_equal 5 } }
+      it { with_expanded_occurrences_view { query_with_no_match.count.must_equal 0 } }
+      # it { with_occurrences_ordering_view { query.count.must_equal 1 } }
     end
 
     private
 
-    def within_occurrences(&block)
-      EventParent.within_occurrences(&block)
+    def with_occurrences_ordering_view(&block)
+      EventParent.with_occurrences_ordering_view(&block)
     end
 
-    def within_expanded_occurrences(&block)
-      EventParent.within_expanded_occurrences(&block)
+    def with_expanded_occurrences_view(&block)
+      EventParent.with_expanded_occurrences_view(&block)
     end
   end
 end

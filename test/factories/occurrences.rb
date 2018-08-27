@@ -9,6 +9,26 @@ FactoryBot.define do
       dtend { DateTime.now.beginning_of_day + 6.hours }
     end
 
+    trait :tomorrow do
+      dtstart { DateTime.now.beginning_of_day + 1.day + 4.hours }
+      dtend { DateTime.now.beginning_of_day + 1.day + 6.hours }
+    end
+
+    trait :yesterday do
+      dtstart { DateTime.now.beginning_of_day - 1.day + 4.hours }
+      dtend { DateTime.now.beginning_of_day - 1.day + 6.hours }
+    end
+
+    trait :next_week do
+      dtstart { DateTime.now.beginning_of_day + 1.week + 4.hours }
+      dtend { DateTime.now.beginning_of_day + 1.week + 6.hours }
+    end
+
+    trait :last_week do
+      dtstart { DateTime.now.beginning_of_day - 1.week + 4.hours }
+      dtend { DateTime.now.beginning_of_day - 1.week + 6.hours }
+    end
+
     trait :today_until_tomorrow do
       dtstart { DateTime.now.beginning_of_day + 4.hours }
       dtend { DateTime.now.beginning_of_day + 1.day }
