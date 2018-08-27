@@ -13,6 +13,10 @@ FactoryBot.define do
       occurrences { [ build(:occurrence, :yesterday) ] }
     end
 
+
+
+
+
     trait :tomorrow_and_yesterday do
       occurrences { [ build(:occurrence, :tomorrow), build(:occurrence, :yesterday) ] }
     end
