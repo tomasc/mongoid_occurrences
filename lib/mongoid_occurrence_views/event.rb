@@ -17,7 +17,10 @@ module MongoidOccurrenceViews
         scope :from_date_time, ->(date_time) { MongoidOccurrenceViews::Queries::FromDateTime.criteria(self, date_time) }
         scope :to_date_time, ->(date_time) { MongoidOccurrenceViews::Queries::ToDateTime.criteria(self, date_time) }
 
-        CreateOccurrencesView.call(self)
+        scope :order_by_start, ->(order = :asc) { MongoidOccurrenceViews::Queries::OrderByStart.criteria(self, order) }
+        scope :order_by_end, ->(order = :asc) { MongoidOccurrenceViews::Queries::OrderByEnd.criteria(self, order) }
+
+        CreateOccurrencesOrderingView.call(self)
         CreateExpandedOccurrencesView.call(self)
       end
     end

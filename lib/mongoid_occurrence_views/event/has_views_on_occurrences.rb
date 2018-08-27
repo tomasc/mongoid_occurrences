@@ -6,20 +6,26 @@ module MongoidOccurrenceViews
       end
 
       module ClassMethods
-        def occurrences_view_name
-          [collection.name, 'occurrences_view'].join('__').freeze
+        def occurrences_ordering_view_name
+          [collection.name, 'occurrences_ordering_view'].join('__').freeze
         end
 
         def expanded_occurrences_view_name
           [collection.name, 'expanded_occurrences_view'].join('__').freeze
         end
 
-        def within_expanded_occurrences(&block)
-          criteria.with(collection: expanded_occurrences_view_name, &block)
+        def with_expanded_occurrences_view(&block)
+          with_occurrences_view(expanded: true, &block)
         end
 
-        def within_occurrences(&block)
-          criteria.with(collection: occurrences_view_name, &block)
+        def with_occurrences_ordering_view(&block)
+          with_occurrences_view(expanded: false, &block)
+        end
+
+        def with_occurrences_view(options = {}, &block)
+          expanded = options.delete(:expanded) { |_| true }
+          options[:collection] ||= expanded ? expanded_occurrences_view_name : occurrences_ordering_view_name
+          criteria.with(options, &block)
         end
       end
     end
