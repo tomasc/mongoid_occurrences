@@ -1,60 +1,39 @@
 module MongoidOccurrenceViews
   module Event
-    class CreateOccurrencesOrderingView
-      def initialize(klass)
-        @klass = klass
-      end
-
-      def self.call(*args)
-        new(*args).call
-      end
-
-      def call
-        CreateMongodbView.call(
-          name: klass.occurrences_ordering_view_name,
-          collection: klass.collection.name,
-          pipeline: pipeline
-        )
+    class CreateOccurrencesOrderingView < CreateView
+      def view_name
+        klass.occurrences_ordering_view_name
       end
 
       def pipeline
-        [
-          { '$unwind': '$occurrences' },
-          { '$unwind': '$occurrences.daily_occurrences' },
-          { '$sort': { 'occurrences.daily_occurrences.ds': 1 } },
-          { '$addFields': { '_sort_dtstart': '$occurrences.daily_occurrences.ds' } }
-          # { '$addFields': {
-          #   '_sort_dtstart': {
-          #     '$ifNull': [
-          #       {
-          #         '$min': {
-          #           '$filter': {
-          #             'input': '$daily_occurrences.ds',
-          #             'as': 'dtstart',
-          #             'cond': {
-          #               '$gte': ['$$dtstart', 'new Date()']
-          #             }
-          #           }
-          #         }
-          #       },
-          #       "foo"
-          #       # { '$max': { '$filter': { 'input': { '$arrayElemAt': ['$occurrences.daily_occurrences.ds', 0] }, 'as': 'dtstart', 'cond': { '$lt': ['$$dtstart', 'new Date()'] } } } }
-          #     ]
-          #   },
-          #   # '_sort_dtend': {
-          #   #   '$ifNull': [
-          #   #     { '$min': { '$filter': { 'input': { '$arrayElemAt': ['$occurrences.daily_occurrences.de', 0] }, 'as': 'dtend', 'cond': { '$gte': ['$$dtend', 'new Date()'] } } } },
-          #   #     { '$max': { '$filter': { 'input': { '$arrayElemAt': ['$occurrences.daily_occurrences.de', 0] }, 'as': 'dtend', 'cond': { '$lt': ['$$dtend', 'new Date()'] } } } }
-          #   #     ]
-          #   #   }
-          #   }
-          # }
-        ]
+        [add_sort_fields]
       end
 
       private
 
-      attr_reader :klass
+      def add_sort_fields
+        { '$addFields': { '_sort_dtstart': sort_dtstart_field, '_sort_dtend': sort_dtend_field } }
+      end
+
+      def sort_dtstart_field
+        sort_field(method: 'min', field_name: 'ds')
+      end
+
+      def sort_dtend_field
+        sort_field(method: 'max', field_name: 'de')
+      end
+
+      def sort_field(method:, field_name:)
+        {
+          "$#{method}": {
+            '$map': {
+              'input': "$#{chained_relations.last}.#{field_name}",
+              'as': 'el',
+              'in': { '$arrayElemAt': ['$$el', 0] }
+            }
+          }
+        }
+      end
     end
   end
 end

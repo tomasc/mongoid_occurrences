@@ -5,33 +5,7 @@ describe MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView do
   let(:parent_view) { subject.new(EventParent) }
 
   describe '1) first' do
-    let(:pipeline) {
-      [
-        {
-          '$addFields': {
-            '_sort_ds': {
-              '$min': {
-                '$map': {
-                  'input': '$occurrences.daily_occurrences.ds',
-                  'as': 'el',
-                  'in': { '$arrayElemAt': ['$$el', 0] }
-                }
-              }
-            },
-            '_sort_de': {
-              '$max': {
-                '$map': {
-                  'input': '$occurrences.daily_occurrences.de',
-                  'as': 'el',
-                  'in': { '$arrayElemAt': ['$$el', 0] }
-                }
-              }
-            }
-          }
-        }
-      ]
-    }
-
+    let(:pipeline) { event_view.pipeline }
     let(:yesterday) { build :occurrence, :yesterday }
     let(:today) { build :occurrence, :today }
     let(:tomorrow) { build :occurrence, :tomorrow }
@@ -39,11 +13,12 @@ describe MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView do
     before { create :event, occurrences: [tomorrow, today, yesterday] }
 
     let(:doc) { Event.collection.aggregate(pipeline).to_a.first }
-    let(:_sort_ds) { DateTime.demongoize(doc['_sort_ds']) }
-    let(:_sort_de) { DateTime.demongoize(doc['_sort_de']) }
+    let(:_sort_dtstart) { DateTime.demongoize(doc['_sort_dtstart']) }
+    let(:_sort_dtend) { DateTime.demongoize(doc['_sort_dtend']) }
 
-    it { _sort_ds.must_equal yesterday.dtstart }
-    it { _sort_de.must_equal tomorrow.dtend }
+    it { pipeline.must_equal event_view.pipeline }
+    it { _sort_dtstart.must_equal yesterday.dtstart }
+    it { _sort_dtend.must_equal tomorrow.dtend }
   end
 
   # describe '2) nearest' do
