@@ -21,10 +21,8 @@ DatabaseCleaner.strategy = :truncation, {
   except: [
     Event.occurrences_ordering_view_name,
     Event.expanded_occurrences_view_name,
-
     EmbeddedEvent.occurrences_ordering_view_name,
     EmbeddedEvent.expanded_occurrences_view_name,
-
     EventParent.occurrences_ordering_view_name,
     EventParent.expanded_occurrences_view_name
   ]
@@ -36,14 +34,12 @@ class MiniTest::Spec
   FactoryBot.find_definitions
   before(:each) { DatabaseCleaner.clean }
   after(:all) do
-    MongoidOccurrenceViews::DestroyMongodbView.call(name: Event.occurrences_ordering_view_name)
-    MongoidOccurrenceViews::DestroyMongodbView.call(name: Event.expanded_occurrences_view_name)
-    MongoidOccurrenceViews::DestroyMongodbView.call(name: EventParent.occurrences_ordering_view_name)
-    MongoidOccurrenceViews::DestroyMongodbView.call(name: EventParent.expanded_occurrences_view_name)
-    MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView.call(Event)
-    MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView.call(EventParent)
-    MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView.call(Event)
-    MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView.call(EventParent)
+    [Event, EventParent, EmbeddedEvent].each do |klass|
+      MongoidOccurrenceViews::DestroyMongodbView.call(name: klass.send(:occurrences_ordering_view_name))
+      MongoidOccurrenceViews::DestroyMongodbView.call(name: klass.send(:expanded_occurrences_view_name))
+      MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView.call(klass)
+      MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView.call(klass)
+    end
   end
 end
 
