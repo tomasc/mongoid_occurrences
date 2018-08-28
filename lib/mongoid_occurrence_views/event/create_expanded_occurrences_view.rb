@@ -27,7 +27,7 @@ module MongoidOccurrenceViews
         { '$addFields': {
           '_dtstart': "$_#{chained_relations.last}.ds",
           '_dtend': "$_#{chained_relations.last}.de",
-          '_sort_key': "$_#{chained_relations.last}.ds"
+          '_order_key': "$_#{chained_relations.last}.ds"
         } }
       end
     end

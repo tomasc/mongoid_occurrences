@@ -13,19 +13,19 @@ describe MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView do
     before { create :event, occurrences: [tomorrow, today, yesterday] }
 
     let(:doc) { Event.collection.aggregate(pipeline).to_a.first }
-    let(:_sort_dtstart) { DateTime.demongoize(doc['_sort_dtstart']) }
-    let(:_sort_dtend) { DateTime.demongoize(doc['_sort_dtend']) }
+    let(:_order_dtstart) { DateTime.demongoize(doc['_order_dtstart']) }
+    let(:_order_dtend) { DateTime.demongoize(doc['_order_dtend']) }
 
     it { pipeline.must_equal event_view.pipeline }
-    it { _sort_dtstart.must_equal yesterday.dtstart }
-    it { _sort_dtend.must_equal tomorrow.dtend }
+    it { _order_dtstart.must_equal yesterday.dtstart }
+    it { _order_dtend.must_equal tomorrow.dtend }
   end
 
   # describe '2) nearest' do
   #   let(:pipeline) {
   #     [
   #       { '$addFields': {
-  #         '_sort_key': {
+  #         '_order_key': {
   #             '$filter': {
   #               'input': {
   #                 '$map': {
@@ -60,8 +60,8 @@ describe MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView do
   #   before { @event = create :event, occurrences: [yesterday, today, tomorrow] }
   #
   #   let(:doc) { Event.collection.aggregate(pipeline).to_a.first }
-  #   # let(:_sort_key) { DateTime.demongoize(doc['_sort_key']) }
+  #   # let(:_order_key) { DateTime.demongoize(doc['_order_key']) }
   #
-  #   it { doc['_sort_key'].must_equal today.dtstart }
+  #   it { doc['_order_key'].must_equal today.dtstart }
   # end
 end

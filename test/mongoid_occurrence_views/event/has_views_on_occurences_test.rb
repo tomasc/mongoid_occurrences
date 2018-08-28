@@ -94,7 +94,7 @@ describe MongoidOccurrenceViews::Event::HasViewsOnOccurrences do
       end
     end
 
-    describe 'sorting' do
+    describe 'ordering' do
 
     end
 

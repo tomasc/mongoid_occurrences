@@ -17,8 +17,8 @@ describe MongoidOccurrenceViews::Queries::OrderByStart do
     end
 
     it do
-      puts klass.collection.aggregate(MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView.new(Event).pipeline).to_a.map { |h| h['_sort_dtstart'] }
-      # puts klass.collection.aggregate(MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView.new(Event).pipeline).to_a.map { |h| h['_sort_dtend'] }
+      puts klass.collection.aggregate(MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView.new(Event).pipeline).to_a.map { |h| h['_order_dtstart'] }
+      # puts klass.collection.aggregate(MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView.new(Event).pipeline).to_a.map { |h| h['_order_dtend'] }
     end
 
     # it { klass.order_by_start(:asc).to_a.must_equal [@last_week, @today, @next_week] }

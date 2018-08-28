@@ -13,7 +13,7 @@ describe MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView do
         { '$addFields': {
           '_dtstart': '$_occurrences.daily_occurrences.ds',
           '_dtend': '$_occurrences.daily_occurrences.de',
-          '_sort_key': '$_occurrences.daily_occurrences.ds'
+          '_order_key': '$_occurrences.daily_occurrences.ds'
         } }
       ]
     end
@@ -27,7 +27,7 @@ describe MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView do
         { '$addFields': {
           '_dtstart': '$_embedded_events.occurrences.daily_occurrences.ds',
           '_dtend': '$_embedded_events.occurrences.daily_occurrences.de',
-          '_sort_key': '$_embedded_events.occurrences.daily_occurrences.ds'
+          '_order_key': '$_embedded_events.occurrences.daily_occurrences.ds'
         } }
       ]
     end

@@ -6,24 +6,24 @@ module MongoidOccurrenceViews
       end
 
       def pipeline
-        [add_sort_fields]
+        [add_order_fields]
       end
 
       private
 
-      def add_sort_fields
-        { '$addFields': { '_sort_dtstart': sort_dtstart_field, '_sort_dtend': sort_dtend_field } }
+      def add_order_fields
+        { '$addFields': { '_order_dtstart': order_dtstart_field, '_order_dtend': order_dtend_field } }
       end
 
-      def sort_dtstart_field
-        sort_field(method: 'min', field_name: 'ds')
+      def order_dtstart_field
+        order_field(method: 'min', field_name: 'ds')
       end
 
-      def sort_dtend_field
-        sort_field(method: 'max', field_name: 'de')
+      def order_dtend_field
+        order_field(method: 'max', field_name: 'de')
       end
 
-      def sort_field(method:, field_name:)
+      def order_field(method:, field_name:)
         {
           "$#{method}": {
             '$map': {

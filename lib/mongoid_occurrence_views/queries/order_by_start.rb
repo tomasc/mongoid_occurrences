@@ -8,7 +8,7 @@ module MongoidOccurrenceViews
 
       def criteria
         with_ordering_view do
-          base_class_criteria.order_by(_sort_dtstart: order)
+          base_class_criteria.order_by(_order_dtstart: order)
         end
       end
 
