@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe MongoidOccurrenceViews::Queries::OrderByStart do
+describe MongoidOccurrenceViews::Queries::OrderByEnd do
   let(:query_ascending) { subject.criteria(klass, :asc) }
   let(:query_descending) { subject.criteria(klass, :desc) }
 
@@ -19,10 +19,10 @@ describe MongoidOccurrenceViews::Queries::OrderByStart do
       create :event, occurrences: [next_week]
     end
 
-    it { with_occurrences_ordering_view { query_ascending.pluck(:_dtstart).must_equal [last_week.dtstart, today.dtstart, next_week.dtstart] } }
-    it { with_occurrences_ordering_view { query_descending.pluck(:_dtstart).must_equal [next_week.dtstart, today.dtstart, last_week.dtstart] } }
-    it { with_expanded_occurrences_view { query_ascending.pluck(:_dtstart).must_equal [last_week.dtstart, yesterday.dtstart, today.dtstart, tomorrow.dtstart, next_week.dtstart] } }
-    it { with_expanded_occurrences_view { query_descending.pluck(:_dtstart).must_equal [next_week.dtstart, tomorrow.dtstart, today.dtstart, yesterday.dtstart, last_week.dtstart] } }
+    it { with_occurrences_ordering_view { query_ascending.pluck(:_dtend).must_equal [today.dtend, tomorrow.dtend, next_week.dtend] } }
+    it { with_occurrences_ordering_view { query_descending.pluck(:_dtend).must_equal [next_week.dtend, tomorrow.dtend, today.dtend] } }
+    it { with_expanded_occurrences_view { query_ascending.pluck(:_dtend).must_equal [last_week.dtend, yesterday.dtend, today.dtend, tomorrow.dtend, next_week.dtend] } }
+    it { with_expanded_occurrences_view { query_descending.pluck(:_dtend).must_equal [next_week.dtend, tomorrow.dtend, today.dtend, yesterday.dtend, last_week.dtend] } }
   end
 
   describe 'Ordering Parents with Embedded Events' do
@@ -40,10 +40,10 @@ describe MongoidOccurrenceViews::Queries::OrderByStart do
       create :event_parent, embedded_events: [event_next_week]
     end
 
-    it { with_occurrences_ordering_view { query_ascending.pluck(:_dtstart).must_equal [last_week.dtstart, today.dtstart, next_week.dtstart] } }
-    it { with_occurrences_ordering_view { query_descending.pluck(:_dtstart).must_equal [next_week.dtstart, today.dtstart, last_week.dtstart] } }
-    it { with_expanded_occurrences_view { query_ascending.pluck(:_dtstart).must_equal [last_week.dtstart, yesterday.dtstart, today.dtstart, tomorrow.dtstart, next_week.dtstart] } }
-    it { with_expanded_occurrences_view { query_descending.pluck(:_dtstart).must_equal [next_week.dtstart, tomorrow.dtstart, today.dtstart, yesterday.dtstart, last_week.dtstart] } }
+    it { with_occurrences_ordering_view { query_ascending.pluck(:_dtend).must_equal [today.dtend, tomorrow.dtend, next_week.dtend] } }
+    it { with_occurrences_ordering_view { query_descending.pluck(:_dtend).must_equal [next_week.dtend, tomorrow.dtend, today.dtend] } }
+    it { with_expanded_occurrences_view { query_ascending.pluck(:_dtend).must_equal [last_week.dtend, yesterday.dtend, today.dtend, tomorrow.dtend, next_week.dtend] } }
+    it { with_expanded_occurrences_view { query_descending.pluck(:_dtend).must_equal [next_week.dtend, tomorrow.dtend, today.dtend, yesterday.dtend, last_week.dtend] } }
   end
 
   private

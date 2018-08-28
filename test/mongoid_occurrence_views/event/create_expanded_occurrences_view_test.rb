@@ -11,6 +11,7 @@ describe MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView do
 
   describe '#pipeline' do
     let(:pipeline) { view.pipeline }
+    let(:aggregation) { klass.collection.aggregate(pipeline) }
 
     describe 'Events' do
       let(:klass) { Event }
@@ -20,6 +21,7 @@ describe MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView do
       let(:_dtstarts) { klass.collection.aggregate(pipeline).to_a.pluck(:_dtstart) }
       let(:_dtends) { klass.collection.aggregate(pipeline).to_a.pluck(:_dtend) }
 
+      it { aggregation.to_a.length.must_equal 5 }
       it { _dtstarts.map { |ds| DateTime.demongoize(ds) }.must_equal occurrences.map(&:dtstart) }
       it { _dtends.map { |ds| DateTime.demongoize(ds) }.must_equal occurrences.map(&:dtend) }
     end
@@ -33,6 +35,7 @@ describe MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView do
       let(:_dtstarts) { klass.collection.aggregate(pipeline).to_a.pluck(:_dtstart) }
       let(:_dtends) { klass.collection.aggregate(pipeline).to_a.pluck(:_dtend) }
 
+      it { aggregation.to_a.length.must_equal 5 }
       it { _dtstarts.map { |ds| DateTime.demongoize(ds) }.must_equal occurrences.map(&:dtstart) }
       it { _dtends.map { |ds| DateTime.demongoize(ds) }.must_equal occurrences.map(&:dtend) }
     end

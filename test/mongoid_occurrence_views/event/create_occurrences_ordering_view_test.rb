@@ -17,73 +17,78 @@ describe MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView do
       describe 'Events' do
         let(:klass) { Event }
 
-        let(:pipeline) {
-          [
-            {
-              '$addFields': {
-                '_order_dtstart': {
-                  '$min': {
-                    '$min': '$occurrences.daily_occurrences.ds'
-                  }
-                },
-                '_order_dtend': {
-                  '$max': {
-                    '$max': '$occurrences.daily_occurrences.de'
-                  }
-                },
-              }
-            }
-          ]
-        }
+        # let(:pipeline) {
+        #   [
+        #     {
+        #       '$addFields': {
+        #         '_dtstart': {
+        #           '$min': {
+        #             '$min': '$occurrences.daily_occurrences.ds'
+        #           }
+        #         },
+        #         '_dtend': {
+        #           '$max': {
+        #             '$max': '$occurrences.daily_occurrences.de'
+        #           }
+        #         },
+        #       }
+        #     }
+        #   ]
+        # }
 
         before { create :event, occurrences: [tomorrow, last_week, yesterday, next_week].shuffle }
 
         let(:doc) { aggregation.to_a.first }
-        let(:_order_dtstart) { DateTime.demongoize(doc['_order_dtstart']) }
-        let(:_order_dtend) { DateTime.demongoize(doc['_order_dtend']) }
+        let(:_dtstart) { DateTime.demongoize(doc['_dtstart']) }
+        let(:_dtend) { DateTime.demongoize(doc['_dtend']) }
 
         it { aggregation.to_a.length.must_equal 1 }
-        it { _order_dtstart.must_equal last_week.dtstart }
-        it { _order_dtend.must_equal next_week.dtend }
+        it { _dtstart.must_equal last_week.dtstart }
+        it { _dtend.must_equal next_week.dtend }
       end
 
       describe 'EventParents' do
         let(:klass) { EventParent }
-        let(:embedded_event_one) { build :embedded_event, occurrences: [tomorrow, next_week, yesterday] }
-        let(:embedded_event_two) { build :embedded_event, occurrences: [last_week, today] }
+        let(:event_yesterday) { build :embedded_event, occurrences: [yesterday] }
+        let(:event_today) { build :embedded_event, occurrences: [today] }
+        let(:event_tomorrow) { build :embedded_event, occurrences: [tomorrow] }
+        let(:event_last_week) { build :embedded_event, occurrences: [last_week] }
+        let(:event_next_week) { build :embedded_event, occurrences: [next_week] }
 
-        let(:pipeline) {
-          [
-            {
-              '$addFields': {
-                '_order_dtstart': {
-                  '$min': {
-                    '$min': {
-                      '$min': '$embedded_events.occurrences.daily_occurrences.ds'
-                    }
-                  }
-                },
-                '_order_dtend': {
-                  '$max': {
-                    '$max': {
-                      '$max': '$embedded_events.occurrences.daily_occurrences.de'
-                    }
-                  }
-                }
-              }
-            }
-          ]
+        # let(:pipeline) {
+        #   [
+        #     {
+        #       '$addFields': {
+        #         '_dtstart': {
+        #           '$min': {
+        #             '$min': {
+        #               '$min': '$embedded_events.occurrences.daily_occurrences.ds'
+        #             }
+        #           }
+        #         },
+        #         '_dtend': {
+        #           '$max': {
+        #             '$max': {
+        #               '$max': '$embedded_events.occurrences.daily_occurrences.de'
+        #             }
+        #           }
+        #         }
+        #       }
+        #     }
+        #   ]
+        # }
+
+        before {
+          create :event_parent, embedded_events: [event_yesterday, event_last_week, event_tomorrow]
         }
 
-        before { create :event_parent, embedded_events: [embedded_event_one, embedded_event_two] }
-
         let(:doc) { aggregation.to_a.first }
-        let(:_order_dtstart) { DateTime.demongoize(doc['_order_dtstart']) }
-        let(:_order_dtend) { DateTime.demongoize(doc['_order_dtend']) }
+        let(:_dtstart) { DateTime.demongoize(doc['_dtstart']) }
+        let(:_dtend) { DateTime.demongoize(doc['_dtend']) }
 
         it { aggregation.to_a.length.must_equal 1 }
-        it { _order_dtstart.must_equal last_week.dtstart }
-        it { _order_dtend.must_equal next_week.dtend }
+        it { _dtstart.must_equal last_week.dtstart }
+        it { _dtend.must_equal tomorrow.dtend }
       end
     end
   end
@@ -92,7 +97,7 @@ describe MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView do
   #   let(:pipeline) {
   #     [
   #       { '$addFields': {
-  #         '_order_key': {
+  #         '_key': {
   #             '$filter': {
   #               'input': {
   #                 '$map': {
@@ -127,8 +132,8 @@ describe MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView do
   #   before { @event = create :event, occurrences: [yesterday, today, tomorrow] }
   #
   #   let(:doc) { Event.collection.aggregate(pipeline).to_a.first }
-  #   # let(:_order_key) { DateTime.demongoize(doc['_order_key']) }
+  #   # let(:_key) { DateTime.demongoize(doc['_key']) }
   #
-  #   it { doc['_order_key'].must_equal today.dtstart }
+  #   it { doc['_key'].must_equal today.dtstart }
   # end
 end

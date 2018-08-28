@@ -41,16 +41,6 @@ describe MongoidOccurrenceViews::Event::HasViewsOnOccurrences do
         it { with_expanded_occurrences_view { klass.all.count.must_equal 7 } }
       end
     end
-
-    private
-
-    def with_occurrences_ordering_view(&block)
-      Event.with_occurrences_ordering_view(&block)
-    end
-
-    def with_expanded_occurrences_view(&block)
-      Event.with_expanded_occurrences_view(&block)
-    end
   end
 
   describe 'included in EventParent' do
@@ -93,15 +83,15 @@ describe MongoidOccurrenceViews::Event::HasViewsOnOccurrences do
         it { with_occurrences_ordering_view { klass.all.count.must_equal 1 } }
       end
     end
+  end
 
-    private
+  private
 
-    def with_occurrences_ordering_view(&block)
-      EventParent.with_occurrences_ordering_view(&block)
-    end
+  def with_occurrences_ordering_view(&block)
+    klass.with_occurrences_ordering_view(&block)
+  end
 
-    def with_expanded_occurrences_view(&block)
-      EventParent.with_expanded_occurrences_view(&block)
-    end
+  def with_expanded_occurrences_view(&block)
+    klass.with_expanded_occurrences_view(&block)
   end
 end

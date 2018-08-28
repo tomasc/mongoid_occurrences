@@ -18,11 +18,11 @@ module MongoidOccurrenceViews
       attr_reader :klass
 
       def dtstart_field
-        within_view? ? '_dtstart' : 'occurrences.daily_occurrences.ds'
+        within_view? ? :_dtstart : :"#{klass.chained_relations.last}.ds"
       end
 
       def dtend_field
-        within_view? ? '_dtend' : 'occurrences.daily_occurrences.de'
+        within_view? ? :_dtend : :"#{klass.chained_relations.last}.de"
       end
 
       def base_class_criteria
@@ -30,7 +30,7 @@ module MongoidOccurrenceViews
       end
 
       def within_view?
-        klass.collection.name =~ /occurrences_view/i
+        within_expanded_view? || within_ordering_view?
       end
 
       def within_expanded_view?
