@@ -1,38 +1,40 @@
 require 'test_helper'
 
 describe MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView do
-  let(:event_view) { subject.new(Event) }
-  let(:parent_view) { subject.new(EventParent) }
+  let(:view) { subject.new(klass) }
+  let(:yesterday) { build :occurrence, :yesterday }
+  let(:today) { build :occurrence, :today }
+  let(:tomorrow) { build :occurrence, :tomorrow }
+  let(:last_week) { build :occurrence, :last_week }
+  let(:next_week) { build :occurrence, :next_week }
+  let(:occurrences) { [tomorrow, last_week, today, yesterday, next_week].shuffle }
 
   describe '#pipeline' do
-    let(:event_pipeline) do
-      [
-        { '$addFields': { '_occurrences': '$occurrences' } },
-        { '$unwind': '$_occurrences' },
-        { '$unwind': '$_occurrences.daily_occurrences' },
-        { '$addFields': {
-          '_dtstart': '$_occurrences.daily_occurrences.ds',
-          '_dtend': '$_occurrences.daily_occurrences.de',
-          '_order_key': '$_occurrences.daily_occurrences.ds'
-        } }
-      ]
+    let(:pipeline) { view.pipeline }
+
+    describe 'Events' do
+      let(:klass) { Event }
+
+      before { create :event, occurrences: occurrences }
+
+      let(:_dtstarts) { klass.collection.aggregate(pipeline).to_a.pluck(:_dtstart) }
+      let(:_dtends) { klass.collection.aggregate(pipeline).to_a.pluck(:_dtend) }
+
+      it { _dtstarts.map { |ds| DateTime.demongoize(ds) }.must_equal occurrences.map(&:dtstart) }
+      it { _dtends.map { |ds| DateTime.demongoize(ds) }.must_equal occurrences.map(&:dtend) }
     end
 
-    let(:parent_pipeline) do
-      [
-        { '$addFields': { '_embedded_events': '$embedded_events' } },
-        { '$unwind': '$_embedded_events' },
-        { '$unwind': '$_embedded_events.occurrences' },
-        { '$unwind': '$_embedded_events.occurrences.daily_occurrences' },
-        { '$addFields': {
-          '_dtstart': '$_embedded_events.occurrences.daily_occurrences.ds',
-          '_dtend': '$_embedded_events.occurrences.daily_occurrences.de',
-          '_order_key': '$_embedded_events.occurrences.daily_occurrences.ds'
-        } }
-      ]
-    end
+    describe 'EventParents' do
+      let(:klass) { EventParent }
+      let(:embedded_event) { build :embedded_event, occurrences: occurrences }
 
-    it { event_view.pipeline.must_equal event_pipeline }
-    it { parent_view.pipeline.must_equal parent_pipeline }
+      before { create :event_parent, embedded_events: [embedded_event] }
+
+      let(:_dtstarts) { klass.collection.aggregate(pipeline).to_a.pluck(:_dtstart) }
+      let(:_dtends) { klass.collection.aggregate(pipeline).to_a.pluck(:_dtend) }
+
+      it { _dtstarts.map { |ds| DateTime.demongoize(ds) }.must_equal occurrences.map(&:dtstart) }
+      it { _dtends.map { |ds| DateTime.demongoize(ds) }.must_equal occurrences.map(&:dtend) }
+    end
   end
 end
