@@ -6,10 +6,22 @@ module MongoidOccurrenceViews
       end
 
       def pipeline
-        [add_order_fields]
+        [unwind_embedded_relations,
+         add_order_fields].reject(&:nil?).flatten
       end
 
       private
+
+      def unwind_embedded_relations
+        return unless relations_to_unwind.length >= 1
+        relations_to_unwind.map do |rel|
+          { '$unwind': "$#{rel}" }
+        end
+      end
+
+      def relations_to_unwind
+        chained_relations[0...-2]
+      end
 
       def add_order_fields
         { '$addFields': { '_order_dtstart': order_dtstart_field, '_order_dtend': order_dtend_field } }
