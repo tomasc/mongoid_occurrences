@@ -94,10 +94,6 @@ describe MongoidOccurrenceViews::Event::HasViewsOnOccurrences do
       end
     end
 
-    describe 'ordering' do
-
-    end
-
     private
 
     def with_occurrences_ordering_view(&block)

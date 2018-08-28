@@ -5,6 +5,22 @@ FactoryBot.define do
       occurrences { [ build(:occurrence, :today) ] }
     end
 
+    trait :yesterday do
+      occurrences { [ build(:occurrence, :yesterday) ] }
+    end
+
+    trait :tomorrow do
+      occurrences { [ build(:occurrence, :tomorrow) ] }
+    end
+
+    trait :last_week do
+      occurrences { [ build(:occurrence, :last_week) ] }
+    end
+
+    trait :next_week do
+      occurrences { [ build(:occurrence, :next_week) ] }
+    end
+
     trait :today_until_tomorrow do
       occurrences { [ build(:occurrence, :today_until_tomorrow) ] }
     end

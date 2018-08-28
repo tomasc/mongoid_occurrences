@@ -1,17 +1,20 @@
 module MongoidOccurrenceViews
   module Event
     module HasViewsOnOccurrences
+      ORDERING_VIEW_NAME_SUFFIX = 'occurrences_ordering_view'.freeze
+      EXPANDED_VIEW_NAME_SUFFIX = 'expanded_occurrences_view'.freeze
+
       def self.included(base)
         base.extend ClassMethods
       end
 
       module ClassMethods
         def occurrences_ordering_view_name
-          [collection.name, 'occurrences_ordering_view'].join('__').freeze
+          [collection.name, ORDERING_VIEW_NAME_SUFFIX].join('__').freeze
         end
 
         def expanded_occurrences_view_name
-          [collection.name, 'expanded_occurrences_view'].join('__').freeze
+          [collection.name, EXPANDED_VIEW_NAME_SUFFIX].join('__').freeze
         end
 
         def with_expanded_occurrences_view(&block)

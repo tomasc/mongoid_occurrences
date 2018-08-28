@@ -29,16 +29,16 @@ module MongoidOccurrenceViews
         klass.criteria
       end
 
-      def with_ordering_view(&block)
-        klass.with_occurrences_ordering_view(&block)
-      end
-
       def within_view?
         klass.collection.name =~ /occurrences_view/i
       end
 
+      def within_expanded_view?
+        klass.collection.name.include? MongoidOccurrenceViews::Event::HasViewsOnOccurrences::EXPANDED_VIEW_NAME_SUFFIX
+      end
+
       def within_ordering_view?
-        klass.collection.name =~ /occurrences_ordering_view/i
+        klass.collection.name.include? MongoidOccurrenceViews::Event::HasViewsOnOccurrences::ORDERING_VIEW_NAME_SUFFIX
       end
     end
   end
