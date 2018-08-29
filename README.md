@@ -1,10 +1,6 @@
 # Mongoid Occurrence Views
 
-Makes one's life easier when working with events that have multiple occurrences, or a recurring schedule. This gem helps to:
-
-1. define multiple occurrences (or a recurring schedule) in a [Mongoid](https://github.com/mongodb/mongoid) document
-2. expand these occurrences or a recurring schedule into series of daily events and embed them in the document
-3. unwind the parent document into a [MongoDB view](https://docs.mongodb.com/manual/core/views) (think virtual collection defined by an aggregation) so that it becomes very easy to query against the parent documents using time-based criteria
+Makes one's life easier when working with events that have multiple occurrences, or a recurring schedule. This gem creates a virtual [Mongodb view](https://docs.mongodb.com/manual/core/views) containing parent documents (events) for each day in which it occurs.
 
 ## Requirements
 
@@ -89,21 +85,7 @@ Note: while these will work outside the supplied views, you can't be sure of the
 
 ### Views & queries
 
-These previously expanded occurrences are then used for Mongoid aggregations.
-The `embeds_many_occurrences` macro sets up two MongoDB views, based on the `Event` document collection name:
-
-* `Event.occurrences_ordering_view_name` (`event__occurrences_ordering_view`) that holds the `Event` documents with `_dtstart` (the chronologically first starting date) and `_dtend` (the chronologically last ending date) useful for ordering
-* `Event.expanded_occurrences_view_name` (`event__expanded_occurrences_view`) that holds the `Event` documents with occurrences unwound per day, meaning the `Event`s will be "duplicated" for each of their daily occurrences.
-
-One can then use these views to query against, like this:
-
-```ruby
-Event.with_occurrences_ordering_view do
-  Event.from_date_time(Time.zone.now).…
-end
-```
-
-or
+The `Event.expanded_occurrences_view_name` is simply a wrapper on default Mongoid's `.with(collection: …)`, specifying the collection to be the expanded virtual one (`event__expanded_occurrences_view`).
 
 ```ruby
 Event.with_expanded_occurrences_view do
