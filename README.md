@@ -6,7 +6,6 @@ Makes one's life easier when working with events that have multiple occurrences,
 2. expand these occurrences or a recurring schedule into series of daily events and embed them in the document
 3. unwind the parent document into a [MongoDB view](https://docs.mongodb.com/manual/core/views) (think virtual collection defined by an aggregation) so that it becomes very easy to query against the parent documents using time-based criteria
 
-
 ## Requirements
 
 * MongoDB 3.4+
@@ -46,12 +45,9 @@ The following fields will become available:
 
 * `dtstart`, (`DateTime`)
 * `dtend` (`DateTime`)
-* `all_day` (`Boolean`)
 * `schedule` (`MongoidIceCubeExtension::Schedule`)
 
-And the following scopes:
-
-* `…`
+* `all_day` (`Boolean`)
 
 ### Events
 
@@ -64,12 +60,12 @@ class Event
 end
 ```
 
-The `embeds_many_occurences` macro will setup embedded relation that holds definition of occurrences. For example:
+The `embeds_many_occurences` macro will setup an embedded relation that holds a definition of occurrences. For example:
 
 ```ruby
-<Occurrence dtstart: …, dtend: …, all_day: …, schedule: …>
-<Occurrence dtstart: …, dtend: …, all_day: …, schedule: …>
-<Occurrence dtstart: …, dtend: …, all_day: …, schedule: …>
+<Occurrence dtstart: …, dtend: …, schedule: …>
+<Occurrence dtstart: …, dtend: …, schedule: …>
+<Occurrence dtstart: …, dtend: …, schedule: …>
 ```
 
 Before each validation callback, each occurrence will expand its definition as follows:
@@ -77,28 +73,41 @@ Before each validation callback, each occurrence will expand its definition as f
 * multi-day occurrences are split into single-day occurrences
 * recurring schedules are expanded into single-day occurrences
 
+The following scopes are available for querying:
+
+* `for_date_time(DateTime)`
+* `for_date_time_range(DateTime, DateTime)`
+* `from_date_time(DateTime)`
+* `to_date_time(DateTime)`
+
+And these scopes for ordering:
+
+* `order_by_start(:asc / :desc)`
+* `order_by_end(:asc / :desc)`
+
+Note: while these will work outside the supplied views, you can't be sure of their results!
 
 ### Views & queries
 
 These previously expanded occurrences are then used for Mongoid aggregations.
 The `embeds_many_occurrences` macro sets up two MongoDB views, based on the `Event` document collection name:
 
-* `Event.occurrences_view_name` (`event__view`) that holds the `Event` documents with occurrences unwound as originally specified
-* `Event.expanded_occurrences_view_name` (`event__expanded_view`) that hold `Event` documents with occurrences unwound per day
+* `Event.occurrences_ordering_view_name` (`event__occurrences_ordering_view`) that holds the `Event` documents with `_dtstart` (the chronologically first starting date) and `_dtend` (the chronologically last ending date) useful for ordering
+* `Event.expanded_occurrences_view_name` (`event__expanded_occurrences_view`) that holds the `Event` documents with occurrences unwound per day, meaning the `Event`s will be "duplicated" for each of their daily occurrences.
 
-One can then use the ability of Mongoid to specify a collection to query against, like this:
+One can then use these views to query against, like this:
 
 ```ruby
-Event.with(collection: Event.occurrences_view_name) do
-  Event.gte(dtstart: Time.zone.now).…
+Event.with_occurrences_ordering_view do
+  Event.from_date_time(Time.zone.now).…
 end
 ```
 
 or
 
 ```ruby
-Event.with(collection: Event.expanded_occurrences_view_name) do
-  Event.gte(dtstart: Time.zone.now).…
+Event.with_expanded_occurrences_view do
+  Event.from_date_time(Time.zone.now).…
 end
 ```
 
