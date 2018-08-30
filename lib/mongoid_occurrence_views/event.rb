@@ -1,8 +1,10 @@
 module MongoidOccurrenceViews
   module Event
     def self.included(base)
-      base.include HasViewsOnOccurrences
-      base.include HasOccurrenceScopes
+      base.class_eval do
+        include HasViewsOnOccurrences
+        include HasOccurrenceScopes
+      end
       base.extend ClassMethods
     end
 

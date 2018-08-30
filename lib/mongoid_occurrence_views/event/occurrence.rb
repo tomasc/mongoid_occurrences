@@ -24,14 +24,14 @@ module MongoidOccurrenceViews
           before_validation :adjust_dates_for_all_day
           before_validation :set_daily_occurrences
         end
-      end
 
-      def dtstart_query_field
-        :"daily_occurrences.ds"
-      end
+        def dtstart_query_field
+          :"daily_occurrences.ds"
+        end
 
-      def dtend_query_field
-        :"daily_occurrences.de"
+        def dtend_query_field
+          :"daily_occurrences.de"
+        end
       end
 
       def all_day
