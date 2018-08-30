@@ -10,6 +10,7 @@ require 'mongoid_occurrence_views/event'
 require 'mongoid_occurrence_views/event/occurrence'
 
 require 'mongoid_occurrence_views/event/has_views_on_occurrences'
+require 'mongoid_occurrence_views/event/has_occurrence_scopes'
 
 require 'mongoid_occurrence_views/event/create_view'
 require 'mongoid_occurrence_views/event/create_expanded_occurrences_view'
