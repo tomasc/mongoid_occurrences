@@ -71,21 +71,29 @@ Before each validation callback, each occurrence will expand its definition as f
 
 The following scopes are available for querying:
 
-* `for_date_time(DateTime)`
-* `for_date_time_range(DateTime, DateTime)`
-* `from_date_time(DateTime)`
-* `to_date_time(DateTime)`
+* `occurs_between(Time, Time)`
+* `occurs_from(Time)`
+* `occurs_on(Time)`
+* `occurs_until(Time)`
 
 And these scopes for ordering:
 
 * `order_by_start(:asc / :desc)`
 * `order_by_end(:asc / :desc)`
 
-Note: while these will work outside the supplied views, you can't be sure of their results!
+To use the queries outside of the view, you have to pass the field to query against:
+
+* `occurs_between(Time, dtstart_field: :'occurrences.daily_occurrences.ds', dtend_field: :'occurrences.daily_occurrences.de')`
+* `occurs_from(Time, dtstart_field: :'occurrences.daily_occurrences.ds')`
+* `occurs_until(Time, dtend_field: :'occurrences.daily_occurrences.de')`
+* `occurs_on(Time, dtstart_field: :'occurrences.daily_occurrences.ds', dtend_field: :'occurrences.daily_occurrences.de')`
+
+* `order_by_start(:asc, dtstart_field: :'occurrences.daily_occurrences.ds')`
+* `order_by_end(:desc, dtend_field: :'occurrences.daily_occurrences.de')`
 
 ### Views & queries
 
-The `Event.expanded_occurrences_view_name` is simply a wrapper on default Mongoid's `.with(collection: …)`, specifying the collection to be the expanded virtual one (`event__expanded_occurrences_view`).
+The `Event.with_expanded_occurrences_view` is simply a wrapper on default Mongoid's `.with(collection: …)`, specifying the collection to be the expanded virtual one (`event__expanded_occurrences_view`).
 
 ```ruby
 Event.with_expanded_occurrences_view do
