@@ -14,19 +14,19 @@ module MongoidOccurrenceViews
       private
 
       def add_fields
-        { '$addFields': { "_#{relation_chain.first}": "$#{relation_chain.first}" } }
+        { '$addFields': { "_#{occurrence_relation_chain.first}": "$#{occurrence_relation_chain.first}" } }
       end
 
       def unwind_associations_to_parent
-        chained_relations.map do |chain|
+        occurrence_relations_chained.map do |chain|
           { '$unwind': "$_#{chain}" }
         end
       end
 
       def add_datetime_fields
         { '$addFields': {
-          '_dtstart': "$_#{chained_relations.last}.ds",
-          '_dtend': "$_#{chained_relations.last}.de",
+          '_dtstart': "$_#{occurrence_relations_chained.last}.ds",
+          '_dtend': "$_#{occurrence_relations_chained.last}.de",
         } }
       end
     end

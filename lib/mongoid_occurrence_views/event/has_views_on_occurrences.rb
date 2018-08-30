@@ -31,22 +31,29 @@ module MongoidOccurrenceViews
           criteria.with(options, &block)
         end
 
-        def chained_relations
-          relation_chain.each_with_index.map do |_, i|
-            relation_chain[0..i].join('.')
+        def occurrence_relations_chained
+          occurrence_relation_chain.each_with_index.map do |_, i|
+            occurrence_relation_chain[0..i].join('.')
           end
         end
 
-        def relation_chain
-          return occurrence_relation_names unless event_relation.present?
-          [event_relation.first.store_as, occurrence_relation_names].flatten
+        def occurrence_relation_chain
+          return occurrence_relation_names unless event_relations.present?
+          [event_relations.first.store_as, occurrence_relation_names].flatten
         end
 
-        # NOTE: event_relations?
-        def event_relation
-          self.relations.values.select do |rel|
-            event_class_names.include?(rel.options[:class_name])
-          end
+        def event_relations
+          return unless self.relations.present?
+          self.relations.values.select { |rel| is_event_relation?(rel) }
+        end
+
+        def is_event_relation?(rel)
+          relation_class_name = rel.options[:class_name]
+          return false unless relation_class_name.present?
+          return true if event_class_names.include?(relation_class_name)
+          return unless relation_class = relation_class_name.safe_constantize
+          event_superclasses = event_class_names.map { |cn| cn.safe_constantize.ancestors }.flatten
+          event_superclasses.include? relation_class
         end
 
         def event_class_names

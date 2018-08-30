@@ -16,14 +16,14 @@ module MongoidOccurrenceViews
       end
 
       def order_dtstart_field
-        min = "$#{chained_relations.last}.ds"
-        chained_relations.length.times { min = { '$min': min } }
+        min = "$#{occurrence_relations_chained.last}.ds"
+        occurrence_relations_chained.length.times { min = { '$min': min } }
         min
       end
 
       def order_dtend_field
-        max = "$#{chained_relations.last}.de"
-        chained_relations.length.times { max = { '$max': max } }
+        max = "$#{occurrence_relations_chained.last}.de"
+        occurrence_relations_chained.length.times { max = { '$max': max } }
         max
       end
     end
