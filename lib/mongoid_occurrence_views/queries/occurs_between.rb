@@ -1,8 +1,8 @@
 module MongoidOccurrenceViews
   module Queries
     class OccursBetween < Query
-      def initialize(klass, dtstart, dtend, options = {})
-        @klass = klass
+      def initialize(base_criteria, dtstart, dtend, options = {})
+        @base_criteria = base_criteria
         @dtstart = dtstart
         @dtend = dtend
         @dtstart_field = options.fetch(:dtstart_field)
@@ -16,7 +16,7 @@ module MongoidOccurrenceViews
         _dtend = dtend.end_of_day if dtend.instance_of?(Date)
         _dtend = dtend.utc
 
-        base_class_criteria.lte(dtstart_field => dtend.to_datetime)
+        base_criteria.lte(dtstart_field => dtend.to_datetime)
                            .gte(dtend_field => dtstart.to_datetime)
       end
 

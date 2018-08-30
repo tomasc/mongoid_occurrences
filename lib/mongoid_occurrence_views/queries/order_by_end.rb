@@ -1,18 +1,19 @@
 module MongoidOccurrenceViews
   module Queries
     class OrderByEnd < Query
-      def initialize(klass, order)
-        @klass = klass
+      def initialize(base_criteria, order, options = {})
+        @base_criteria = base_criteria
         @order = order
+        @dtend_field = options.fetch(:dtend_field)
       end
 
       def criteria
-        klass.order_by(dtend_field => order)
+        base_criteria.order_by(dtend_field => order)
       end
 
       private
 
-      attr_reader :order
+      attr_reader :order, :dtend_field
     end
   end
 end
