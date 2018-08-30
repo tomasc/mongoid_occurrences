@@ -12,8 +12,9 @@ module MongoidOccurrenceViews
         embeds_many :occurrences, class_name: options.fetch(:class_name)
         accepts_nested_attributes_for :occurrences, allow_destroy: true
 
-        scope :for_date_time, -> (date_time) { MongoidOccurrenceViews::Queries::DateTime.criteria(self, date_time) }
-        scope :for_date_time_range, ->(dtstart, dtend) { MongoidOccurrenceViews::Queries::DateTimeRange.criteria(self, dtstart, dtend) }
+        scope :for_date_time, -> (date_time, dtstart_field = :_dtstart, dtend_field = :_dtend) { MongoidOccurrenceViews::Queries::DateTime.criteria(criteria, date_time, dtstart_field: dtstart_field, dtend_field: dtend_field) }
+
+        scope :for_date_time_range, ->(dtstart, dtend, dtstart_field = :_dtstart, dtend_field = :_dtend) { MongoidOccurrenceViews::Queries::DateTimeRange.criteria(self, dtstart, dtend, dtstart_field: dtstart_field, dtend_field: dtend_field) }
         scope :from_date_time, ->(date_time) { MongoidOccurrenceViews::Queries::FromDateTime.criteria(self, date_time) }
         scope :to_date_time, ->(date_time) { MongoidOccurrenceViews::Queries::ToDateTime.criteria(self, date_time) }
 

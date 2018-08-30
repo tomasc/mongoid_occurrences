@@ -1,9 +1,11 @@
 module MongoidOccurrenceViews
   module Queries
     class DateTime < Query
-      def initialize(klass, date_time)
-        @klass = klass
+      def initialize(base_class_criteria, date_time, options = {})
+        @base_class_criteria = base_class_criteria
         @date_time = date_time
+        @dtstart_field = options.fetch(:dtstart_field)
+        @dtend_field = options.fetch(:dtend_field)
       end
 
       def criteria
@@ -16,7 +18,7 @@ module MongoidOccurrenceViews
 
       private
 
-      attr_reader :klass, :date_time
+      attr_reader :base_class_criteria, :date_time, :dtstart_field, :dtend_field
     end
   end
 end
