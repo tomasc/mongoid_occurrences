@@ -81,7 +81,7 @@ And these scopes for ordering:
 * `order_by_start(:asc / :desc)`
 * `order_by_end(:asc / :desc)`
 
-To use the queries outside of the view, you have to pass the field to query against:
+To use the queries outside of the expanded occurrences view, you'll have to pass the field to query against:
 
 * `occurs_between(Time, dtstart_field: :'occurrences.daily_occurrences.ds', dtend_field: :'occurrences.daily_occurrences.de')`
 * `occurs_from(Time, dtstart_field: :'occurrences.daily_occurrences.ds')`
@@ -97,7 +97,7 @@ The `Event.with_expanded_occurrences_view` is simply a wrapper on default Mongoi
 
 ```ruby
 Event.with_expanded_occurrences_view do
-  Event.from_date_time(Time.zone.now).…
+  Event.occurs_from(Time.zone.now).…
 end
 ```
 
