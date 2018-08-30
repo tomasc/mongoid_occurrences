@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe MongoidOccurrenceViews::Queries::DateTimeRange do
+describe MongoidOccurrenceViews::Queries::OccursBetween do
   let(:today) { DateTime.now.beginning_of_day }
   let(:query) { subject.criteria(klass, query_dtstart, query_dtend) }
   let(:query_for_last_year) { subject.criteria(klass, query_dtstart - 1.year, query_dtend - 1.year) }

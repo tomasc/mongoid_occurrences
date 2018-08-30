@@ -22,6 +22,14 @@ module MongoidOccurrenceViews
 
           before_validation :adjust_dates_for_all_day
           before_validation :set_daily_occurrences
+
+          scope :occurs_on, -> (date_time) { MongoidOccurrenceViews::Queries::OccursOn.criteria(criteria, date_time, dtstart_field: :'daily_occurrences.ds', dtend_field: :'daily_occurrences.de') }
+          scope :occurs_between, ->(dtstart, dtend) { MongoidOccurrenceViews::Queries::OccursBetween.criteria(self, dtstart, dtend, dtstart_field: :'daily_occurrences.ds', dtend_field: :'daily_occurrences.de') }
+          scope :occurs_from, ->(date_time) { MongoidOccurrenceViews::Queries::OccursFrom.criteria(self, date_time, dtstart_field: :'daily_occurrences.ds') }
+          scope :occurs_until, ->(date_time) { MongoidOccurrenceViews::Queries::OccursUntil.criteria(self, date_time, dtend_field: :'daily_occurrences.de') }
+
+          scope :order_by_start, ->(order = :asc) { MongoidOccurrenceViews::Queries::OrderByStart.criteria(self, order) }
+          scope :order_by_end, ->(order = :asc) { MongoidOccurrenceViews::Queries::OrderByEnd.criteria(self, order) }
         end
       end
 

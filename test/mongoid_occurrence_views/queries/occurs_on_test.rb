@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe MongoidOccurrenceViews::Queries::DateTime do
+describe MongoidOccurrenceViews::Queries::OccursOn do
   let(:today) { DateTime.now.beginning_of_day }
   let(:unexpanded_query) { subject.criteria(klass.criteria, query_date_time, dtstart_field: unexpanded_dtstart_field, dtend_field: unexpanded_dtend_field) }
   let(:unexpanded_query_for_last_year) { subject.criteria(klass, query_date_time - 1.year, dtstart_field: unexpanded_dtstart_field, dtend_field: unexpanded_dtend_field) }

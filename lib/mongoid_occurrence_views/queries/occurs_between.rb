@@ -1,10 +1,12 @@
 module MongoidOccurrenceViews
   module Queries
-    class DateTimeRange < Query
-      def initialize(klass, dtstart, dtend)
+    class OccursBetween < Query
+      def initialize(klass, dtstart, dtend, options = {})
         @klass = klass
         @dtstart = dtstart
         @dtend = dtend
+        @dtstart_field = options.fetch(:dtstart_field)
+        @dtend_field = options.fetch(:dtend_field)
       end
 
       def criteria
@@ -20,7 +22,7 @@ module MongoidOccurrenceViews
 
       private
 
-      attr_reader :dtstart, :dtend
+      attr_reader :dtstart, :dtend, :dtstart_field, :dtend_field
     end
   end
 end

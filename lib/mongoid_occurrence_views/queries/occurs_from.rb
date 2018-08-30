@@ -1,8 +1,8 @@
 module MongoidOccurrenceViews
   module Queries
-    class FromDateTime < Query
-      def initialize(klass, date_time)
-        @klass = klass
+    class OccursFrom < Query
+      def initialize(base_criteria, date_time)
+        @base_criteria = base_criteria
         @date_time = date_time
       end
 
@@ -10,7 +10,7 @@ module MongoidOccurrenceViews
         _date_time = date_time.end_of_day if date_time.instance_of?(Date)
         _date_time = date_time.utc
 
-        base_class_criteria.gte(dtstart_field => _date_time)
+        base_criteria.gte(dtstart_field => _date_time)
       end
 
       private
