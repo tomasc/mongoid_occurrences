@@ -43,7 +43,7 @@ The following fields will become available:
 * `dtend` (`DateTime`)
 * `schedule` (`MongoidIceCubeExtension::Schedule`)
 
-* `all_day` (`Boolean`)
+And the `all_day` (`Boolean`) `attr_accessor`, which is useful for user facing forms.
 
 ### Events
 
@@ -81,25 +81,17 @@ And these scopes for ordering:
 * `order_by_start(:asc / :desc)`
 * `order_by_end(:asc / :desc)`
 
-To use the queries outside of the expanded occurrences view, you'll have to pass the field to query against:
-
-* `occurs_between(Time, dtstart_field: :'occurrences.daily_occurrences.ds', dtend_field: :'occurrences.daily_occurrences.de')`
-* `occurs_from(Time, dtstart_field: :'occurrences.daily_occurrences.ds')`
-* `occurs_until(Time, dtend_field: :'occurrences.daily_occurrences.de')`
-* `occurs_on(Time, dtstart_field: :'occurrences.daily_occurrences.ds', dtend_field: :'occurrences.daily_occurrences.de')`
-
-* `order_by_start(:asc, dtstart_field: :'occurrences.daily_occurrences.ds')`
-* `order_by_end(:desc, dtend_field: :'occurrences.daily_occurrences.de')`
-
 ### Views & queries
 
-The `Event.with_expanded_occurrences_view` is simply a wrapper on default Mongoid's `.with(collection: …)`, specifying the collection to be the expanded virtual one (`event__expanded_occurrences_view`).
+You can then use the `with_expanded_occurrences_view` method to work with the expanded events:
 
 ```ruby
 Event.with_expanded_occurrences_view do
   Event.occurs_from(Time.zone.now).…
 end
 ```
+
+The method is simply a wrapper on Mongoid's `.with(collection: …)` method, which specifies the collection to be the expanded occurrences view (`event__expanded_occurrences_view`).
 
 ## Development
 
