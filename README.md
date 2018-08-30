@@ -1,6 +1,6 @@
 # Mongoid Occurrence Views
 
-Makes one's life easier when working with events that have multiple occurrences, or a recurring schedule. This gem creates a virtual [Mongodb view](https://docs.mongodb.com/manual/core/views) containing parent documents (events) for each day in which it occurs.
+Makes one's life easier when working with events that have multiple occurrences, or a recurring schedule. This gem creates a virtual [Mongodb view](https://docs.mongodb.com/manual/core/views) containing parent documents (events) for each day in which they occur.
 
 ## Requirements
 
