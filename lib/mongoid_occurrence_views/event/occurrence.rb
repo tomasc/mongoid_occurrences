@@ -51,7 +51,7 @@ module MongoidOccurrenceViews
       end
 
       def schedule_dtend
-        dtstart + SCHEDULE_DURATION
+        dtstart + self.class::SCHEDULE_DURATION
       end
 
       def recurring?
