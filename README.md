@@ -4,6 +4,7 @@ Makes one's life easier when working with events that have multiple occurrences,
 
 ## Requirements
 
+* Mongoid 7.1+
 * MongoDB 3.4+
 
 ## Installation
