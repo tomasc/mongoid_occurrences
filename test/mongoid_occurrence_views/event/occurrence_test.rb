@@ -57,6 +57,12 @@ describe MongoidOccurrenceViews::Event::Occurrence do
         it { occurrence.daily_occurrences.pluck(:dtstart).must_equal [today.beginning_of_day] }
         it { occurrence.daily_occurrences.pluck(:dtend).must_equal [today.end_of_day] }
       end
+
+      describe 'persistance' do
+        before { occurrence.validate! }
+
+        it { occurrence.daily_occurrences.to_a.size.wont_equal 2 }
+      end
     end
 
     describe 'spanning multiple days' do

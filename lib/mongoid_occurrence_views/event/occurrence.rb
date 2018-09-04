@@ -21,8 +21,12 @@ module MongoidOccurrenceViews
           validates_presence_of :dtstart
           validates_presence_of :dtend
 
-          before_validation :adjust_dates_for_all_day
-          before_validation :set_daily_occurrences
+          before_validation do
+            daily_occurrences.delete_all if changed?
+          end
+
+          after_validation :adjust_dates_for_all_day, if: :changed?
+          after_validation :set_daily_occurrences, if: :changed?
         end
 
         def dtstart_query_field
@@ -72,6 +76,8 @@ module MongoidOccurrenceViews
         return unless recurring?
 
         schedule.occurrences(schedule_dtend.to_time).each do |occurrence|
+          next if daily_occurrences.any? { |d| d.dtstart == occurrence.start_time && d.dtend == occurrence.end_time }
+
           daily_occurrences.build(
             dtstart: occurrence.start_time,
             dtend: occurrence.end_time.change(hour: dtend.hour, min: dtend.minute)
@@ -89,6 +95,7 @@ module MongoidOccurrenceViews
           occurence_dtstart = is_single_day || date == date_range.first ? dtstart : date.beginning_of_day
           occurence_dtend = is_single_day || date == date_range.last ? dtend : date.end_of_day
 
+          next if daily_occurrences.any? { |d| d.dtstart == occurence_dtstart && d.dtend == occurence_dtend }
           daily_occurrences.build(dtstart: occurence_dtstart, dtend: occurence_dtend)
         end
       end
