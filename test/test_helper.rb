@@ -6,7 +6,6 @@ require 'minitest'
 require 'minitest-implicit-subject'
 require 'minitest/autorun'
 require 'minitest/spec'
-require 'minitest/hooks/default'
 require 'factory_bot'
 
 require 'mongoid_occurrence_views'
