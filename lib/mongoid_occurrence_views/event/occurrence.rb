@@ -39,6 +39,8 @@ module MongoidOccurrenceViews
       end
 
       def all_day
+        return unless dtstart.present?
+        return unless dtend.present?
         @all_day ||= begin
           dtstart == dtstart.beginning_of_day &&
             dtend == dtend.end_of_day
