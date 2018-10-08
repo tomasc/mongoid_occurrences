@@ -11,7 +11,7 @@ module MongoidOccurrenceViews
     module ClassMethods
       def embeds_many_occurrences(options = {})
         embeds_many :occurrences, class_name: options.fetch(:class_name)
-        accepts_nested_attributes_for :occurrences, allow_destroy: true
+        accepts_nested_attributes_for :occurrences, allow_destroy: true, reject_if: :all_blank
 
         CreateExpandedOccurrencesView.call(self) unless embedded?
         # CreateOccurrencesOrderingView.call(self) unless embedded?

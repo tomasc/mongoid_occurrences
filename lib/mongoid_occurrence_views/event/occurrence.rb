@@ -21,12 +21,8 @@ module MongoidOccurrenceViews
           validates_presence_of :dtstart
           validates_presence_of :dtend
 
-          before_validation do
-            daily_occurrences.delete_all if changed?
-          end
-
           after_validation :adjust_dates_for_all_day, if: :changed?
-          after_validation :set_daily_occurrences, if: :changed?
+          after_validation :assign_daily_occurrences, if: :changed?
         end
 
         def dtstart_query_field
@@ -41,15 +37,13 @@ module MongoidOccurrenceViews
       def all_day
         return unless dtstart.present?
         return unless dtend.present?
-        @all_day ||= begin
-          dtstart == dtstart.beginning_of_day &&
-            dtend == dtend.end_of_day
-        end
+
+        @all_day ||= dtstart == dtstart.beginning_of_day && dtend == dtend.end_of_day
       end
       alias all_day? all_day
 
       def all_day=(val)
-        @all_day = val
+        @all_day = [true, 'true', 1, '1'].include?(val)
       end
 
       def schedule_dtend
@@ -69,37 +63,36 @@ module MongoidOccurrenceViews
         self.dtend = dtend.end_of_day
       end
 
-      def set_daily_occurrences
-        set_daily_occurrences_from_schedule
-        set_daily_occurrences_from_date_range
+      def assign_daily_occurrences
+        return unless dtstart_changed? || dtend_changed?
+        self.daily_occurrences = daily_occurrences_from_schedule + daily_occurrences_from_date_range
       end
 
-      def set_daily_occurrences_from_schedule
-        return unless recurring?
+      def daily_occurrences_from_schedule
+        return [] unless recurring?
 
-        schedule.occurrences(schedule_dtend.to_time).each do |occurrence|
-          next if daily_occurrences.any? { |d| d.dtstart == occurrence.start_time && d.dtend == occurrence.end_time }
-
-          daily_occurrences.build(
+        schedule.occurrences(schedule_dtend.to_time).map do |occurrence|
+          relations['daily_occurrences'].klass.new(
             dtstart: occurrence.start_time,
             dtend: occurrence.end_time.change(hour: dtend.hour, min: dtend.minute)
           )
-        end
+        end.compact
       end
 
-      def set_daily_occurrences_from_date_range
-        return if recurring?
-
+      def daily_occurrences_from_date_range
+        return [] if recurring?
         date_range = Range.new(dtstart.to_date, dtend.to_date)
         is_single_day = (date_range.first == date_range.last)
 
-        date_range.each do |date|
+        date_range.map do |date|
           occurence_dtstart = is_single_day || date == date_range.first ? dtstart : date.beginning_of_day
           occurence_dtend = is_single_day || date == date_range.last ? dtend : date.end_of_day
 
-          next if daily_occurrences.any? { |d| d.dtstart == occurence_dtstart && d.dtend == occurence_dtend }
-          daily_occurrences.build(dtstart: occurence_dtstart, dtend: occurence_dtend)
-        end
+          relations['daily_occurrences'].klass.new(
+            dtstart: occurence_dtstart,
+            dtend: occurence_dtend
+          )
+        end.compact
       end
 
       class DailyOccurrence
@@ -108,6 +101,14 @@ module MongoidOccurrenceViews
         # alias fields to keep document size small
         field :ds, as: :dtstart, type: DateTime
         field :de, as: :dtend, type: DateTime
+
+        def all_day
+          return unless dtstart.present?
+          return unless dtend.present?
+
+          dtstart == dtstart.beginning_of_day && dtend == dtend.end_of_day
+        end
+        alias all_day? all_day
       end
     end
   end
