@@ -1,5 +1,7 @@
 # Mongoid Occurrence Views
 
+[![Build Status](https://travis-ci.org/tomasc/mongoid_occurrence_views.svg)](https://travis-ci.org/tomasc/mongoid_occurrence_views) [![Gem Version](https://badge.fury.io/rb/mongoid_occurrence_views.svg)](http://badge.fury.io/rb/mongoid_occurrence_views) [![Coverage Status](https://img.shields.io/coveralls/tomasc/mongoid_occurrence_views.svg)](https://coveralls.io/r/tomasc/mongoid_occurrence_views)
+
 Makes one's life easier when working with events that have multiple occurrences, or a recurring schedule. This gem creates a virtual [Mongodb view](https://docs.mongodb.com/manual/core/views) containing parent documents (events) for each day in which they occur.
 
 ## Requirements
