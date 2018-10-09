@@ -35,10 +35,6 @@ module MongoidOccurrenceViews
         def dtend_query_field
           :"daily_occurrences.de"
         end
-
-        def schedule_dtend
-          super || Time.zone.now + SCHEDULE_DURATION
-        end
       end
 
       def all_day
@@ -57,6 +53,10 @@ module MongoidOccurrenceViews
         schedule.present?
       end
 
+      def schedule_dtend
+        read_attribute(:schedule_dtend) || (Time.zone.now + SCHEDULE_DURATION)
+      end
+
       private
 
       def nil_schedule
@@ -71,7 +71,7 @@ module MongoidOccurrenceViews
       end
 
       def assign_daily_occurrences
-        return unless dtstart_changed? || dtend_changed?
+        return unless dtstart_changed? || dtend_changed? || schedule_changed? || schedule_dtend_changed?
         self.daily_occurrences = daily_occurrences_from_schedule + daily_occurrences_from_date_range
       end
 
