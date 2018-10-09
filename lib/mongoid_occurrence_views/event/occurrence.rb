@@ -14,12 +14,15 @@ module MongoidOccurrenceViews
           field :dtend, type: DateTime
 
           field :schedule, type: MongoidIceCubeExtension::Schedule
+          field :schedule_dtend, type: Time
 
           embedded_in :event, class_name: options.fetch(:class_name, nil)
           embeds_many :daily_occurrences, class_name: 'MongoidOccurrenceViews::Event::Occurrence::DailyOccurrence', order: :dtstart.asc
 
           validates_presence_of :dtstart
           validates_presence_of :dtend
+
+          before_validation :nil_schedule, unless: :recurring?
 
           after_validation :adjust_dates_for_all_day, if: :changed?
           after_validation :assign_daily_occurrences, if: :changed?
@@ -31,6 +34,10 @@ module MongoidOccurrenceViews
 
         def dtend_query_field
           :"daily_occurrences.de"
+        end
+
+        def schedule_dtend
+          super || Time.zone.now + SCHEDULE_DURATION
         end
       end
 
@@ -46,15 +53,15 @@ module MongoidOccurrenceViews
         @all_day = [true, 'true', 1, '1'].include?(val)
       end
 
-      def schedule_dtend
-        dtstart + self.class::SCHEDULE_DURATION
-      end
-
       def recurring?
         schedule.present?
       end
 
       private
+
+      def nil_schedule
+        self.schedule = nil
+      end
 
       def adjust_dates_for_all_day
         return unless all_day?
@@ -71,7 +78,7 @@ module MongoidOccurrenceViews
       def daily_occurrences_from_schedule
         return [] unless recurring?
 
-        schedule.occurrences(schedule_dtend.to_time).map do |occurrence|
+        schedule.occurrences(schedule_dtend).map do |occurrence|
           relations['daily_occurrences'].klass.new(
             dtstart: occurrence.start_time,
             dtend: occurrence.end_time.change(hour: dtend.hour, min: dtend.minute)
