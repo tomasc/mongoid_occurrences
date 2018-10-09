@@ -54,7 +54,7 @@ module MongoidOccurrenceViews
       end
 
       def schedule_dtend
-        read_attribute(:schedule_dtend) || (Time.zone.now + SCHEDULE_DURATION)
+        read_attribute(:schedule_dtend) || (dtstart.try(:to_time) || Time.now) + SCHEDULE_DURATION
       end
 
       private
