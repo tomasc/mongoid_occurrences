@@ -8,6 +8,16 @@ module MongoidOccurrenceViews
         base.extend ClassMethods
       end
 
+      def dtstart
+        return unless self.class.within_view?
+        DateTime.demongoize(self[:_dtstart])
+      end
+
+      def dtend
+        return unless self.class.within_view?
+        DateTime.demongoize(self[:_dtend])
+      end
+
       module ClassMethods
         def occurrences_ordering_view_name
           [collection.name, ORDERING_VIEW_NAME_SUFFIX].join('__').freeze

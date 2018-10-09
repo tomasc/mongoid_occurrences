@@ -41,6 +41,26 @@ describe MongoidOccurrenceViews::Event::HasViewsOnOccurrences do
         it { with_expanded_occurrences_view { klass.all.count.must_equal 7 } }
       end
     end
+
+    describe '#dtstart' do
+      let(:event) { build(:event, :today) }
+
+      before { event.save! }
+
+      it { klass.all.first.dtstart.must_be_nil }
+      it { with_occurrences_ordering_view { klass.all.first.dtstart.wont_be_nil } }
+      it { with_expanded_occurrences_view { klass.all.first.dtstart.wont_be_nil } }
+    end
+
+    describe '#dtend' do
+      let(:event) { build(:event, :today) }
+
+      before { event.save! }
+
+      it { klass.all.first.dtend.must_be_nil }
+      it { with_occurrences_ordering_view { klass.all.first.dtend.wont_be_nil } }
+      it { with_expanded_occurrences_view { klass.all.first.dtend.wont_be_nil } }
+    end
   end
 
   describe 'included in EventParent' do

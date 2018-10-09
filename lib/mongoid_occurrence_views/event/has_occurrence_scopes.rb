@@ -24,7 +24,7 @@ module MongoidOccurrenceViews
         end
 
         def within_view?
-          collection.name.include? MongoidOccurrenceViews::Event::HasViewsOnOccurrences::EXPANDED_VIEW_NAME_SUFFIX
+          collection.name =~ /#{MongoidOccurrenceViews::Event::HasViewsOnOccurrences::EXPANDED_VIEW_NAME_SUFFIX}|#{MongoidOccurrenceViews::Event::HasViewsOnOccurrences::ORDERING_VIEW_NAME_SUFFIX}/
         end
       end
     end
