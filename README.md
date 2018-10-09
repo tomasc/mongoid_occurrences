@@ -2,7 +2,10 @@
 
 [![Build Status](https://travis-ci.org/tomasc/mongoid_occurrence_views.svg)](https://travis-ci.org/tomasc/mongoid_occurrence_views) [![Gem Version](https://badge.fury.io/rb/mongoid_occurrence_views.svg)](http://badge.fury.io/rb/mongoid_occurrence_views) [![Coverage Status](https://img.shields.io/coveralls/tomasc/mongoid_occurrence_views.svg)](https://coveralls.io/r/tomasc/mongoid_occurrence_views)
 
-Makes one's life easier when working with events that have multiple occurrences, or a recurring schedule. This gem creates a virtual [Mongodb view](https://docs.mongodb.com/manual/core/views) containing parent documents (events) for each day in which they occur.
+Makes one's life easier when working with events that have multiple occurrences,
+or a recurring schedule. This gem creates a virtual
+[Mongodb view](https://docs.mongodb.com/manual/core/views) containing parent
+documents (events) for each day in which they occur.
 
 ## Requirements
 
@@ -29,7 +32,8 @@ Or install it yourself as:
 
 ### Occurrences
 
-Define a Mongoid document class that will hold information about each occurrence.
+Define a Mongoid document class that will hold information about each
+occurrence.
 
 ```ruby
 class Occurrence
@@ -40,13 +44,14 @@ class Occurrence
 end
 ```
 
-The following fields will become available:
+This will create the following fields on `Occurrence`:
 
 * `dtstart`, (`DateTime`)
 * `dtend` (`DateTime`)
 * `schedule` (`MongoidIceCubeExtension::Schedule`)
 
-And the `all_day` (`Boolean`) `attr_accessor`, which is useful for user facing forms.
+And the `all_day` (`Boolean`) `attr_accessor`, which is useful for user facing
+forms.
 
 ### Events
 
@@ -59,7 +64,8 @@ class Event
 end
 ```
 
-The `embeds_many_occurences` macro will setup an embedded relation that holds a definition of occurrences. For example:
+The `embeds_many_occurences` macro will setup an embedded relation that holds a
+definition of occurrences. For example:
 
 ```ruby
 <Occurrence dtstart: …, dtend: …, schedule: …>
@@ -67,7 +73,8 @@ The `embeds_many_occurences` macro will setup an embedded relation that holds a 
 <Occurrence dtstart: …, dtend: …, schedule: …>
 ```
 
-Before each validation callback, each occurrence will expand its definition as follows:
+Before each validation callback, each occurrence will expand its definition as
+follows:
 
 * multi-day occurrences are split into single-day occurrences
 * recurring schedules are expanded into single-day occurrences
@@ -86,7 +93,17 @@ And these scopes for ordering:
 
 ### Views & queries
 
-You can then use the `with_expanded_occurrences_view` method to work with the expanded events:
+The gem packs two views:
+* `expanded_occurrences_view` for working with the expanded events
+* `occurrences_ordering_view` for ordering the unexpanded events
+
+#### Expanded Occurrences View
+
+This view shows expanded events, meaning events are expanded for each daily
+occurrence.
+
+Use the `with_expanded_occurrences_view` method to work with the expanded
+events:
 
 ```ruby
 Event.with_expanded_occurrences_view do
@@ -94,18 +111,47 @@ Event.with_expanded_occurrences_view do
 end
 ```
 
-The method is simply a wrapper on Mongoid's `.with(collection: …)` method, which specifies the collection to be the expanded occurrences view (`event__expanded_occurrences_view`).
+The method is simply a wrapper on Mongoid's `.with(collection: …)` method, which
+specifies the collection to be the expanded occurrences view
+(`event__expanded_occurrences_view`).
+
+The view exposes a `:_dtstart` and `:_dtend` value on each `Event`.
+
+#### Occurrences Ordering View
+
+This view shows unexpanded events, collecting `dtstart` from the chronologically
+first daily occurrence and `dtend` from the chronologically last occurrence.
+
+Use the `with_occurrences_ordering_view` method to order the unexpanded events.
+
+```ruby
+Event.with_expanded_occurrences_view do
+  Event.order_by_start(:asc)…
+end
+```
+
+The method is simply a wrapper on Mongoid's `.with(collection: …)` method, which
+specifies the collection to be the expanded occurrences view
+(`event__expanded_occurrences_view`).
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run
+`rake test` to run the tests. You can also run `bin/console` for an interactive
+prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`. To
+release a new version, update the version number in `version.rb`, and then run
+`bundle exec rake release`, which will create a git tag for the version, push
+git commits and tags, and push the `.gem` file to
+[rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/tomasc/mongoid_occurrence_views.
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/tomasc/mongoid_occurrence_views.
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+The gem is available as open source under the terms of the
+[MIT License](https://opensource.org/licenses/MIT).
