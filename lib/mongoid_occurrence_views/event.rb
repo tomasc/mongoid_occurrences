@@ -14,7 +14,7 @@ module MongoidOccurrenceViews
         accepts_nested_attributes_for :occurrences, allow_destroy: true, reject_if: :all_blank
 
         CreateExpandedOccurrencesView.call(self) unless embedded?
-        # CreateOccurrencesOrderingView.call(self) unless embedded?
+        CreateOccurrencesOrderingView.call(self) unless embedded?
       end
     end
   end
