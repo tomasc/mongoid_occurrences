@@ -12,6 +12,7 @@ module MongoidOccurrenceViews
         def embedded_in_event(options = {})
           field :dtstart, type: DateTime
           field :dtend, type: DateTime
+          field :all_day, type: Boolean
 
           field :schedule, type: MongoidIceCubeExtension::Schedule
           field :schedule_dtend, type: Time
@@ -38,16 +39,13 @@ module MongoidOccurrenceViews
       end
 
       def all_day
-        return unless dtstart.present?
-        return unless dtend.present?
+        return super unless dtstart.present? && dtend.present?
+        return super unless super.nil?
 
-        @all_day ||= dtstart == dtstart.beginning_of_day && dtend == dtend.end_of_day
+        dtstart.to_i == dtstart.beginning_of_day.to_i &&
+          dtend.to_i == dtend.end_of_day.to_i
       end
       alias all_day? all_day
-
-      def all_day=(val)
-        @all_day = [true, 'true', 1, '1'].include?(val)
-      end
 
       def recurring?
         schedule.present?
@@ -66,8 +64,8 @@ module MongoidOccurrenceViews
       def adjust_dates_for_all_day
         return unless all_day?
 
-        self.dtstart = dtstart.beginning_of_day
-        self.dtend = dtend.end_of_day
+        write_attribute(:dtstart, dtstart.try(:beginning_of_day))
+        write_attribute(:dtend, dtend.try(:end_of_day))
       end
 
       def assign_daily_occurrences
@@ -87,6 +85,7 @@ module MongoidOccurrenceViews
 
       def daily_occurrences_from_date_range
         return [] if recurring?
+
         date_range = Range.new(dtstart.to_date, dtend.to_date)
         is_single_day = (date_range.first == date_range.last)
 
@@ -109,10 +108,10 @@ module MongoidOccurrenceViews
         field :de, as: :dtend, type: DateTime
 
         def all_day
-          return unless dtstart.present?
-          return unless dtend.present?
+          return unless dtstart.present? && dtend.present?
 
-          dtstart == dtstart.beginning_of_day && dtend == dtend.end_of_day
+          dtstart.to_i == dtstart.beginning_of_day.to_i &&
+            dtend.to_i == dtend.end_of_day.to_i
         end
         alias all_day? all_day
       end

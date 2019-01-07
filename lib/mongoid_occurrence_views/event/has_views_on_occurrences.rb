@@ -18,6 +18,13 @@ module MongoidOccurrenceViews
         DateTime.demongoize(self[:_dtend])
       end
 
+      def all_day
+        return unless dtstart.present? && dtend.present?
+        dtstart.to_i == dtstart.beginning_of_day.to_i &&
+          dtend.to_i == dtend.end_of_day.to_i
+      end
+      alias all_day? all_day
+
       module ClassMethods
         def occurrences_ordering_view_name
           [collection.name, ORDERING_VIEW_NAME_SUFFIX].join('__').freeze
