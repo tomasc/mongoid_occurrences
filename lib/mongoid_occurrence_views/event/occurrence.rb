@@ -71,7 +71,6 @@ module MongoidOccurrenceViews
       end
 
       def assign_daily_occurrences
-        return unless dtstart_changed? || dtend_changed? || schedule_changed? || schedule_dtend_changed?
         self.daily_occurrences = daily_occurrences_from_schedule + daily_occurrences_from_date_range
       end
 
