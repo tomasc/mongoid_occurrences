@@ -1,8 +1,8 @@
 # CHANGELOG
 
-## Unreleased
+## 0.2.0
 
-* `all_day` becomes a field
+* [PR#3](https://github.com/tomasc/mongoid_occurrence_views/pull/3) `all_day` becomes a field
 
 ## 0.1.1
 
