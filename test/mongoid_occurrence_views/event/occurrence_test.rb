@@ -23,6 +23,7 @@ describe MongoidOccurrenceViews::Event::Occurrence do
         occurrence.dtend = today.end_of_day
       end
 
+      it { occurrence.must_be :all_day }
       it { occurrence.must_be :all_day? }
       it { occurrence.dtend.must_equal today.end_of_day }
     end
