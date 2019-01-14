@@ -3,10 +3,6 @@ require 'mongoid_occurrence_views/aggregations/aggregation'
 module MongoidOccurrenceViews
   module Aggregations
     class OccursUntil < Aggregation
-      option :allow_disk_use, true
-      option :sort_key, :_dtstart
-      option :sort_order, :asc
-
       def initialize(base_criteria, date_time, options = {})
         @base_criteria = base_criteria
         @date_time = date_time

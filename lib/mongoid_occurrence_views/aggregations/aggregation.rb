@@ -6,9 +6,14 @@ module MongoidOccurrenceViews
           HashWithIndifferentAccess[options].fetch(name, default_value)
         end
       end
-      
-      def initialize(base_criteria)
+
+      option :allow_disk_use, true
+      option :sort_key, :_dtstart
+      option :sort_order, :asc
+
+      def initialize(base_criteria, options = {})
         @base_criteria = base_criteria
+        @options = options
       end
 
       def instantiate
