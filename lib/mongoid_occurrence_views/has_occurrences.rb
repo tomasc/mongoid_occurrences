@@ -21,7 +21,17 @@ module MongoidOccurrenceViews
     end
 
     def assign_daily_occurrences!
-      self.daily_occurrences = occurrences.flat_map(&:daily_occurrences)
+      self.daily_occurrences = begin
+        res = occurrences.with_operators(:append).flat_map(&:daily_occurrences)
+
+        occurrences.with_operators(%i[remove replace]).flat_map(&:daily_occurrences).each do |occurrence|
+          res = res.reject { |res_occurrence| res_occurrence.overlaps?(occurrence) }
+        end
+
+        res += occurrences.with_operators(%i[replace]).flat_map(&:daily_occurrences)
+
+        res.sort
+      end
     end
   end
 end

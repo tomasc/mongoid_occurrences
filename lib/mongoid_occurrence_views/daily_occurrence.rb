@@ -22,5 +22,21 @@ module MongoidOccurrenceViews
         dtend.to_i == dtend.end_of_day.to_i
     end
     alias all_day? all_day
+
+    def <=>(other)
+      sort_key <=> other.sort_key
+    end
+
+    def sort_key
+      [dtstart, dtend]
+    end
+
+    def to_range
+      (dtstart..dtend)
+    end
+
+    def overlaps?(occurrence)
+      to_range.overlaps?(occurrence.to_range)
+    end
   end
 end

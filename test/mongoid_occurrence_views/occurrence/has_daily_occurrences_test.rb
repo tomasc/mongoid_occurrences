@@ -35,7 +35,7 @@ describe MongoidOccurrenceViews::Occurrence::HasDailyOccurrences do
   end
 
   describe 'from schedule' do
-    let(:occurrence) { build :occurrence, :today, schedule: build(:schedule, :daily_this_week) }
+    let(:occurrence) { build :occurrence, :today, schedule: build(:schedule, :daily_for_a_week) }
 
     it { occurrence.daily_occurrences.size.must_equal 7 }
     it { occurrence.daily_occurrences.map(&:dtstart).must_equal [start_date, start_date + 1.day, start_date + 2.days, start_date + 3.days, start_date + 4.days, start_date + 5.days, start_date + 6.days] }

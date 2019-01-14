@@ -1,7 +1,7 @@
 require 'test_helper'
 
 describe MongoidOccurrenceViews::Occurrence::HasSchedule do
-  let(:occurrence) { build :occurrence, schedule: build(:schedule, :daily_this_week) }
+  let(:occurrence) { build :occurrence, schedule: build(:schedule, :daily_for_a_week) }
 
   it { occurrence.must_be :recurring? }
   it { occurrence.must_respond_to :schedule_dtstart }
