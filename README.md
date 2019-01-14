@@ -40,14 +40,14 @@ class Event
 end
 ```
 
-This document will gain the `#assign_daily_occurrences!` method (automatically triggered `:after_validation`), which expands all occurrence definitions in the embedded relation called `:daily_occurrences`.
+This document will gain the `#assign_daily_occurrences!` method (automatically triggered `:after_validation`), which expands all occurrence definitions in the embedded relation called `#daily_occurrences`.
 
-The class will also gain the following scopes, useful for querying for events based on the `daily_occurrences`:
+The class will also gain the following scopes, useful for querying for events based on the `#daily_occurrences`:
 
-* `:occurs_between(dtstart, dtend)`
-* `:occurs_from(dtstart)`
-* `:occurs_on(day)`
-* `:occurs_until(dtend)`
+* `.occurs_between(dtstart, dtend)`
+* `.occurs_from(dtstart)`
+* `.occurs_on(day)`
+* `.occurs_until(dtend)`
 
 ### Occurrence
 
@@ -62,13 +62,13 @@ class Occurrence
 end
 ```
 
-This document will gain the `:dtstart`, `:dtend` and `:all_day` fields to define individual occurrences.
+This document will gain the `#dtstart`, `#dtend` and `#all_day` fields to define individual occurrences.
 
-Recurring schedule is handled via the [IceCube](https://github.com/seejohnrun/ice_cube) and [MongoidIceCubeExtension](https://github.com/tomasc/mongoid_ice_cube_extension) gems. The model gains `:schedule`, and `:schedule_dtstart`, `:schedule_dtend` fields (with default values for schedule 1 year from now), along with `#recurrence_rule=` writer method.
+Recurring schedule is handled via the [IceCube](https://github.com/seejohnrun/ice_cube) and [MongoidIceCubeExtension](https://github.com/tomasc/mongoid_ice_cube_extension) gems. The model gains `#schedule`, and `#schedule_dtstart`, `#schedule_dtend` fields (with default values for schedule 1 year from now), along with `#recurrence_rule=` writer method.
 
-It is possible to influence the way the occurrences are expanded into `daily_occurrences` using the `:operator` enum field, which accepts the following values:
+It is possible to influence the way the occurrences are expanded into `#daily_occurrences` using the `#operator` enum field, which accepts the following values:
 
-* `:append` – appends to the list of `daily_occurrences` (default)
+* `:append` – appends to the list of `#daily_occurrences` (default)
 * `:replace` – replaces all occurrences that happen on the same day with itself
 * `:remove` - removes all occurrences that happen on the same day
 
@@ -81,7 +81,7 @@ It is possible to aggregate (unwind) the events so that they are multiplied per 
 * `MongoidOccurrenceViews::Aggregations::OccursOn.instantiate(Event.criteria, day)`
 * `MongoidOccurrenceViews::Aggregations::OccursUntil.instantiate(Event.criteria, dtend)`
 
-The aggregations will add `:_dtstart`, `:_dtend` fields to the unwound documents. For easier access, mixin the `MongoidOccurrenceViews::HasFieldsFromAggregation` to your `Event` class:
+The aggregations will add `#_dtstart`, `#_dtend` fields to the unwound documents. For easier access, mixin the `MongoidOccurrenceViews::HasFieldsFromAggregation` to your `Event` class:
 
 ```ruby
 class Event
@@ -93,7 +93,7 @@ class Event
 end
 ```
 
-This will automatically add `:dtstart` and `:dtend` fields with correct (demongoized) values, as well as the `#all_day?` method.
+This will automatically add `#dtstart` and `#dtend` fields with correct (demongoized) values, as well as the `#all_day?` method.
 
 ### Embedded events
 
@@ -116,7 +116,7 @@ class EventParent
 end
 ```
 
-You will then need to write your own aggregations with an extra step to `$unwind` the embedded `events`.
+You will then need to write your own aggregations with an extra step to `$unwind` the embedded `#events`.
 
 ## Development
 
