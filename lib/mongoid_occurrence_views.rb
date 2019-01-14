@@ -4,6 +4,7 @@ require 'mongoid'
 require 'mongoid_ice_cube_extension'
 
 require 'mongoid_occurrence_views/daily_occurrence'
+require 'mongoid_occurrence_views/has_fields_from_aggregation'
 require 'mongoid_occurrence_views/has_occurrences'
 require 'mongoid_occurrence_views/occurrence'
 
