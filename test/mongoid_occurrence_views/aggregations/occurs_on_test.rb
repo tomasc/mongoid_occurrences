@@ -7,17 +7,17 @@ describe MongoidOccurrenceViews::Aggregations::OccursOn do
 
   before { event.save! }
 
-  it { subject.new(Event.criteria, occurrence_today.dtstart.to_date).instantiate.size.must_equal 1 }
-  it { subject.new(Event.criteria, occurrence_today.dtstart.to_date).instantiate.must_include event }
+  it { subject.instantiate(Event.criteria, occurrence_today.dtstart.to_date).size.must_equal 1 }
+  it { subject.instantiate(Event.criteria, occurrence_today.dtstart.to_date).must_include event }
 
-  it { subject.new(Event.criteria, occurrence_tomorrow.dtstart.to_date).instantiate.size.must_equal 1 }
-  it { subject.new(Event.criteria, occurrence_tomorrow.dtstart.to_date).instantiate.must_include event }
+  it { subject.instantiate(Event.criteria, occurrence_tomorrow.dtstart.to_date).size.must_equal 1 }
+  it { subject.instantiate(Event.criteria, occurrence_tomorrow.dtstart.to_date).must_include event }
 
-  it { subject.new(Event.criteria, occurrence_tomorrow.dtstart.to_date + 1.day).instantiate.wont_include event }
+  it { subject.instantiate(Event.criteria, occurrence_tomorrow.dtstart.to_date + 1.day).wont_include event }
 
   describe 'dtstart & dtend' do
-    let(:instantiated_event_today) { subject.new(Event.criteria, occurrence_today.dtstart).instantiate[0] }
-    let(:instantiated_event_tomorrow) { subject.new(Event.criteria, occurrence_tomorrow.dtstart).instantiate[0] }
+    let(:instantiated_event_today) { subject.instantiate(Event.criteria, occurrence_today.dtstart)[0] }
+    let(:instantiated_event_tomorrow) { subject.instantiate(Event.criteria, occurrence_tomorrow.dtstart)[0] }
 
     it { instantiated_event_today.dtstart.must_equal occurrence_today.dtstart }
     it { instantiated_event_today.dtend.must_equal occurrence_today.dtend }

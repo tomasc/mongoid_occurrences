@@ -7,20 +7,20 @@ describe MongoidOccurrenceViews::Aggregations::OccursUntil do
 
   before { event.save! }
 
-  it { subject.new(Event.criteria, occurrence_today.dtend).instantiate.size.must_equal 1 }
-  it { subject.new(Event.criteria, occurrence_today.dtend).instantiate.must_include event }
+  it { subject.instantiate(Event.criteria, occurrence_today.dtend).size.must_equal 1 }
+  it { subject.instantiate(Event.criteria, occurrence_today.dtend).must_include event }
 
-  it { subject.new(Event.criteria, occurrence_tomorrow.dtend).instantiate.size.must_equal 2 }
-  it { subject.new(Event.criteria, occurrence_tomorrow.dtend).instantiate.must_include event }
+  it { subject.instantiate(Event.criteria, occurrence_tomorrow.dtend).size.must_equal 2 }
+  it { subject.instantiate(Event.criteria, occurrence_tomorrow.dtend).must_include event }
 
-  it { subject.new(Event.criteria, occurrence_tomorrow.dtend + 1.day).instantiate.size.must_equal 2 }
-  it { subject.new(Event.criteria, occurrence_tomorrow.dtend + 1.day).instantiate.must_include event }
+  it { subject.instantiate(Event.criteria, occurrence_tomorrow.dtend + 1.day).size.must_equal 2 }
+  it { subject.instantiate(Event.criteria, occurrence_tomorrow.dtend + 1.day).must_include event }
 
-  it { subject.new(Event.criteria, occurrence_today.dtstart - 1.day).instantiate.wont_include event }
+  it { subject.instantiate(Event.criteria, occurrence_today.dtstart - 1.day).wont_include event }
 
   describe 'dtstart & dtend' do
-    let(:instantiated_event_today) { subject.new(Event.criteria, occurrence_tomorrow.dtend).instantiate[0] }
-    let(:instantiated_event_tomorrow) { subject.new(Event.criteria, occurrence_tomorrow.dtend).instantiate[1] }
+    let(:instantiated_event_today) { subject.instantiate(Event.criteria, occurrence_tomorrow.dtend)[0] }
+    let(:instantiated_event_tomorrow) { subject.instantiate(Event.criteria, occurrence_tomorrow.dtend)[1] }
 
     it { instantiated_event_today.dtstart.must_equal occurrence_today.dtstart }
     it { instantiated_event_today.dtend.must_equal occurrence_today.dtend }

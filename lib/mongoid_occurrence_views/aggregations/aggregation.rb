@@ -7,6 +7,10 @@ module MongoidOccurrenceViews
         end
       end
 
+      def self.instantiate(*args)
+        new(*args).instantiate
+      end
+
       option :allow_disk_use, true
       option :sort_key, :_dtstart
       option :sort_order, :asc
