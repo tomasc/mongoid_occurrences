@@ -2,11 +2,11 @@
 
 [![Build Status](https://travis-ci.org/tomasc/mongoid_occurrence_views.svg)](https://travis-ci.org/tomasc/mongoid_occurrence_views) [![Gem Version](https://badge.fury.io/rb/mongoid_occurrence_views.svg)](http://badge.fury.io/rb/mongoid_occurrence_views) [![Coverage Status](https://img.shields.io/coveralls/tomasc/mongoid_occurrence_views.svg)](https://coveralls.io/r/tomasc/mongoid_occurrence_views)
 
-By taking advantage of [Mongodb views](https://docs.mongodb.com/manual/core/views), this gem simplifies querying for events with multiple occurrences or a recurring schedule.
+Facilitates aggregations for events with multiple occurrences or a recurring schedule.
 
 ## Requirements
 
-* Mongoid 7.1+
+* Mongoid 7+
 * MongoDB 3.4+
 
 ## Installation
@@ -27,99 +27,96 @@ Or install it yourself as:
 
 ## Usage
 
-### Occurrences
+### Event
 
-Define a Mongoid document class that will hold information about each occurrence.
+Define a Mongoid document that will embed occurrence definitions.
+
+```ruby
+class Event
+  include Mongoid::Document
+  include MongoidOccurrenceViews::HasOccurrences
+
+  embeds_many_occurrences class_name: "Occurrence"
+end
+```
+
+This document will gain the `#assign_daily_occurrences!` method (automatically triggered `:after_validation`), which expands all occurrence definitions in the embedded relation called `:daily_occurrences`.
+
+The class will also gain the following scopes, useful for querying for events based on the `daily_occurrences`:
+
+* `:occurs_between(dtstart, dtend)`
+* `:occurs_from(dtstart)`
+* `:occurs_on(day)`
+* `:occurs_until(dtend)`
+
+### Occurrence
+
+Define a Mongoid document that defines the occurrence.
 
 ```ruby
 class Occurrence
   include Mongoid::Document
-  include MongoidOccurrenceViews::Event::Occurrence
+  include MongoidOccurrenceViews::Occurrence
 
   embedded_in_event class_name: 'Event'
 end
 ```
 
-This will create the following fields on `Occurrence`:
+This document will gain the `:dtstart`, `:dtend` and `:all_day` fields to define individual occurrences.
 
-* `dtstart`, (`DateTime`)
-* `dtend` (`DateTime`)
-* `schedule` (`MongoidIceCubeExtension::Schedule`)
+Recurring schedule is handled via the [IceCube](https://github.com/seejohnrun/ice_cube) and [MongoidIceCubeExtension](https://github.com/tomasc/mongoid_ice_cube_extension) gems. The model gains `:schedule`, and `:schedule_dtstart`, `:schedule_dtend` fields (with default values for schedule 1 year from now), along with `#recurrence_rule=` writer method.
 
-And the `all_day` (`Boolean`) `attr_accessor`, which is useful for user-facing forms.
+It is possible to influence the way the occurrences are expanded into `daily_occurrences` using the `:operator` enum field, which accepts the following values:
 
-### Events
+* `:append` – appends to the list of `daily_occurrences` (default)
+* `:replace` – replaces all occurrences that happen on the same day with itself
+* `:remove` - removes all occurrences that happen on the same day
+
+### Aggregations
+
+It is possible to aggregate (unwind) the events so that they are multiplied per daily occurrences. Example aggregations are included:
+
+* `MongoidOccurrenceViews::Aggregations::OccursBetween.instantiate(Event.criteria, dtstart, dtend)`
+* `MongoidOccurrenceViews::Aggregations::OccursFrom.instantiate(Event.criteria, dtstart)`
+* `MongoidOccurrenceViews::Aggregations::OccursOn.instantiate(Event.criteria, day)`
+* `MongoidOccurrenceViews::Aggregations::OccursUntil.instantiate(Event.criteria, dtend)`
+
+The aggregations will add `:_dtstart`, `:_dtend` fields to the unwound documents. For easier access, mixin the `MongoidOccurrenceViews::HasFieldsFromAggregation` to your `Event` class:
 
 ```ruby
 class Event
   include Mongoid::Document
-  include MongoidOccurrenceViews::Event
+  include MongoidOccurrenceViews::HasFieldsFromAggregation
+  include MongoidOccurrenceViews::HasOccurrences
 
-  embeds_many_occurrences class_name: 'Occurrence'
+  embeds_many_occurrences class_name: "Occurrence"
 end
 ```
 
-The `embeds_many_occurences` macro will setup an embedded relation that holds a definition of occurrences. For example:
+This will automatically add `:dtstart` and `:dtend` fields with correct (demongoized) values, as well as the `#all_day?` method.
+
+### Embedded events
+
+If your events are itself embedded:
 
 ```ruby
-<Occurrence dtstart: …, dtend: …, schedule: …>
-<Occurrence dtstart: …, dtend: …, schedule: …>
-<Occurrence dtstart: …, dtend: …, schedule: …>
-```
-
-Before each validation callback, each occurrence will expand its definition as follows:
-
-* multi-day occurrences are split into single-day occurrences
-* recurring schedules are expanded into single-day occurrences
-
-The following scopes are available for querying:
-
-* `occurs_between(Time, Time)`
-* `occurs_from(Time)`
-* `occurs_on(Time)`
-* `occurs_until(Time)`
-
-And these scopes for ordering:
-
-* `order_by_start(:asc / :desc)`
-* `order_by_end(:asc / :desc)`
-
-### Views & queries
-
-The gem creates two views (virtual collections):
-
-* `expanded_occurrences_view` for working with the expanded events
-* `occurrences_ordering_view` for ordering the unexpanded events
-
-#### Expanded Occurrences View
-
-This view lists expanded events – meaning events expanded for each daily occurrence.
-
-Use the `with_expanded_occurrences_view` method to query the expanded events:
-
-```ruby
-Event.with_expanded_occurrences_view do
-  Event.occurs_from(Time.zone.now).…
+class EventParent
+  embeds_many :events, class_name: 'Event'
 end
 ```
 
-The `.with_expanded_occurrences_view` method is simply a syntactic sugar on top of Mongoid's `.with(collection: …)` method, which specifies the collection to be the expanded occurrences view (`event__expanded_occurrences_view`).
-
-The view adds a `:_dtstart` and `:_dtend` fields to each `Event`.
-
-#### Occurrences Ordering View
-
-This view lists unexpanded events, circumnavigating Mongodb limitation for sorting by embedded documents. It adds `dtstart` field with a value coming from occurrence chronologically first, and `dtend` field with a value of occurrence chronologically last.
-
-Use the `with_occurrences_ordering_view` method to order the unexpanded events.
+Simply add the following scopes on the parent document:
 
 ```ruby
-Event.with_occurrences_ordering_view do
-  Event.order_by_start(:asc)…
+class EventParent
+  scope :occurs_between, ->(dtstart, dtend) { elem_match(events: Event.occurs_between(dtstart, dtend).selector) }
+  scope :occurs_from, ->(date_time) { elem_match(events: Event.occurs_from(date_time).selector) }
+  scope :occurs_on, ->(date_time) { elem_match(events: Event.occurs_on(date_time).selector) }
+  scope :occurs_until, ->(date_time) { elem_match(events: Event.occurs_until(date_time).selector) }
 end
 ```
 
-The `.with_occurrences_ordering_view` method is simply a syntactic sugar on top of Mongoid's `.with(collection: …)` method, which specifies the collection to be the expanded occurrences view (`event__expanded_occurrences_view`).
+You will then need to write your own aggregations with an extra step to `$unwind` the embedded `events`.
 
 ## Development
 

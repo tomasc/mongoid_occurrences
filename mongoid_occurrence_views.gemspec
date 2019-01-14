@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Tomas Celizna', 'Asger Behncke Jacobsen']
   spec.email         = ['tomas.celizna@gmail.com', 'a@asgerbehnckejacobsen.dk']
 
-  spec.summary       = "Makes one's life easier when working with events that have multiple occurrences, or a recurring schedule."
+  spec.summary       = 'Facilitates aggregations for events with multiple occurrences or a recurring schedule.'
   spec.homepage      = 'https://github.com/tomasc/mongoid_occurrence_views'
   spec.license       = 'MIT'
 
