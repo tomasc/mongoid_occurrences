@@ -5,7 +5,9 @@ module MongoidOccurrenceViews
     class OccursUntil < Query
       def initialize(base_criteria, date_time, options = {})
         @base_criteria = base_criteria
+
         @date_time = date_time
+        
         @dtend_field = options.fetch(:dtend_field, :dtend)
       end
 

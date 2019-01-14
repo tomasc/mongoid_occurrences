@@ -1,7 +1,6 @@
 require 'mongoid_occurrence_views/occurrence/has_daily_occurrences'
 require 'mongoid_occurrence_views/occurrence/has_operators'
 require 'mongoid_occurrence_views/occurrence/has_schedule'
-require 'mongoid_occurrence_views/occurrence/has_scopes'
 
 module MongoidOccurrenceViews
   module Occurrence
@@ -15,8 +14,6 @@ module MongoidOccurrenceViews
 
       base.prepend HasSchedule
       base.singleton_class.prepend HasSchedule::ClassMethods
-
-      base.include HasScopes
     end
 
     module ClassMethods

@@ -5,8 +5,10 @@ module MongoidOccurrenceViews
     class OccursBetween < Query
       def initialize(base_criteria, dtstart, dtend, options = {})
         @base_criteria = base_criteria
+        
         @dtstart = dtstart
         @dtend = dtend
+
         @dtstart_field = options.fetch(:dtstart_field, :dtstart)
         @dtend_field = options.fetch(:dtend_field, :dtend)
       end

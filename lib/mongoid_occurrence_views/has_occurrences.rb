@@ -3,10 +3,10 @@ module MongoidOccurrenceViews
     def self.included(base)
       base.extend ClassMethods
 
-      base.scope :occurs_between, ->(dtstart, dtend) { elem_match(occurrences: criteria.klass.relations['occurrences'].klass.occurs_between(dtstart, dtend).selector) }
-      base.scope :occurs_from, ->(dtstart) { elem_match(occurrences: criteria.klass.relations['occurrences'].klass.occurs_from(dtstart).selector) }
-      base.scope :occurs_on, ->(day) { elem_match(occurrences: criteria.klass.relations['occurrences'].klass.occurs_on(day).selector) }
-      base.scope :occurs_until, ->(dtend) { elem_match(occurrences: criteria.klass.relations['occurrences'].klass.occurs_until(dtend).selector) }
+      base.scope :occurs_between, ->(dtstart, dtend) { elem_match(daily_occurrences: DailyOccurrence.occurs_between(dtstart, dtend).selector) }
+      base.scope :occurs_from, ->(dtstart) { elem_match(daily_occurrences: DailyOccurrence.occurs_from(dtstart).selector) }
+      base.scope :occurs_on, ->(day) { elem_match(daily_occurrences: DailyOccurrence.occurs_on(day).selector) }
+      base.scope :occurs_until, ->(dtend) { elem_match(daily_occurrences: DailyOccurrence.occurs_until(dtend).selector) }
     end
 
     module ClassMethods
@@ -17,6 +17,22 @@ module MongoidOccurrenceViews
         embeds_many :daily_occurrences, class_name: 'MongoidOccurrenceViews::DailyOccurrence', order: :dtstart.asc
 
         after_validation :assign_daily_occurrences!
+      end
+    end
+
+    def dtstart
+      @dtstart ||= begin
+        return daily_occurrences.unscoped.order(dtstart: :asc).pluck(:dtstart).first unless self['_dtstart']
+
+        DateTime.demongoize(self['_dtstart'])
+      end
+    end
+
+    def dtend
+      @dtend ||= begin
+        return daily_occurrences.unscoped.order(dtend: :desc).pluck(:dtend).first unless self['_dtend']
+
+        DateTime.demongoize(self['_dtend'])
       end
     end
 

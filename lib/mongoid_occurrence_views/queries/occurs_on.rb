@@ -5,13 +5,14 @@ module MongoidOccurrenceViews
     class OccursOn < Query
       def initialize(base_criteria, date_time, options = {})
         @base_criteria = base_criteria
+
         @date_time = date_time
-        @dtstart_field = options.fetch(:dtstart_field, :dtstart)
-        @dtend_field = options.fetch(:dtend_field, :dtend)
+
+        @options = options
       end
 
       def criteria
-        OccursBetween.criteria(base_criteria, adjusted_dtstart, adjusted_dtend)
+        OccursBetween.criteria(base_criteria, adjusted_dtstart, adjusted_dtend, options)
       end
 
       private
@@ -28,7 +29,7 @@ module MongoidOccurrenceViews
         date_time
       end
 
-      attr_reader :date_time, :dtstart_field, :dtend_field
+      attr_reader :date_time, :dtstart_field, :dtend_field, :options
     end
   end
 end

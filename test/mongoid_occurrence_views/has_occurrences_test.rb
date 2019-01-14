@@ -16,6 +16,15 @@ describe MongoidOccurrenceViews::HasOccurrences do
     it { event.must_respond_to :daily_occurrences }
   end
 
+  describe '#dtstart & #dtend' do
+    let(:occurrence_1) { build :occurrence, :today }
+    let(:occurrence_2) { build :occurrence, :tomorrow }
+    let(:event) { create :event, occurrences: [occurrence_1, occurrence_2] }
+
+    it { event.dtstart.must_equal occurrence_1.dtstart }
+    it { event.dtend.must_equal occurrence_2.dtend }
+  end
+
   describe 'daily_occurrences' do
     let(:occurrence_1) { build :occurrence, :today }
     let(:occurrence_2) { build :occurrence, :tomorrow }
