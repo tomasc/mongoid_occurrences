@@ -25,7 +25,7 @@ module MongoidOccurrenceViews
 
     def occurences_cache_key
       last_timestamp = occurrences.unscoped.order(updated_at: :desc).limit(1).pluck(:updated_at).first
-      "#{occurrences.size}-#{last_timestamp.to_i}"
+      "#{occurrences.unscoped.size}-#{last_timestamp.to_i}"
     end
 
     def assign_daily_occurrences!
