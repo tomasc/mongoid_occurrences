@@ -20,7 +20,7 @@ module MongoidOccurrenceViews
           { '$addFields' => { '_daily_occurrences' => '$daily_occurrences' } },
           { '$unwind' => { 'path' => '$_daily_occurrences' } },
           { '$addFields' => { '_dtstart' => '$_daily_occurrences.ds', '_dtend' => '$_daily_occurrences.de' } },
-          { '$project' => { '_daily_occurrences' => 0 }},
+          { '$project' => { '_daily_occurrences' => 0 } },
           { '$match' => Queries::OccursOn.criteria(base_criteria, date_time, dtstart_field: '_dtstart', dtend_field: '_dtend').selector },
           { '$sort' => { sort_key => { asc: 1, desc: -1 }[sort_order] } }
         ]
