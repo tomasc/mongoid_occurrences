@@ -21,6 +21,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'ice_cube'
   spec.add_dependency 'mongoid', '>= 7.0.2', '< 8'
+  spec.add_dependency 'mongoid-enum_attribute'
   spec.add_dependency 'mongoid_ice_cube_extension', '>= 0.1.1'
 
   spec.add_development_dependency 'activesupport', '> 3.0'

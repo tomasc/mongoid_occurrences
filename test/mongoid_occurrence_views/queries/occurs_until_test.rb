@@ -1,105 +1,20 @@
 require 'test_helper'
 
 describe MongoidOccurrenceViews::Queries::OccursUntil do
-  let(:today) { DateTime.now.beginning_of_day }
-  let(:unexpanded_query) { subject.criteria(klass.criteria, query_date_time, dtend_field: unexpanded_dtend_field) }
-  let(:unexpanded_query_for_last_year) { subject.criteria(klass.criteria, query_date_time - 1.year, dtend_field: unexpanded_dtend_field) }
-  let(:expanded_query) { subject.criteria(klass.criteria, query_date_time, dtend_field: :_dtend) }
-  let(:expanded_query_for_last_year) { subject.criteria(klass.criteria, query_date_time - 1.year, dtend_field: :_dtend) }
+  let(:occurrence) { build :occurrence, :today }
+  let(:event) { build :event, occurrences: [occurrence] }
 
-  describe 'Querying Events' do
-    let(:klass) { Event }
-    let(:unexpanded_dtend_field) { :'occurrences.daily_occurrences.de' }
+  before { event.assign_daily_occurrences! }
 
-    describe 'spanning one day' do
-      before { create(:event, :today) }
-
-      let(:query_date_time) { today + 1.day }
-
-      it { unexpanded_query.count.must_equal 1 }
-      it { unexpanded_query_for_last_year.count.must_equal 0 }
-      it { with_expanded_occurrences_view { expanded_query.count.must_equal 1 } }
-      it { with_expanded_occurrences_view { expanded_query_for_last_year.count.must_equal 0 } }
-      # it { with_occurrences_ordering_view { query.count.must_equal 1 } }
-      # it { with_occurrences_ordering_view { query_for_last_year.count.must_equal 0 } }
-    end
-
-    describe 'spanning multiple days' do
-      before { create(:event, :today_until_tomorrow) }
-
-      let(:query_date_time) { today + 1.day }
-
-      it { unexpanded_query.count.must_equal 1 }
-      it { unexpanded_query_for_last_year.count.must_equal 0 }
-      it { with_expanded_occurrences_view { expanded_query.count.must_equal 2 } }
-      it { with_expanded_occurrences_view { expanded_query_for_last_year.count.must_equal 0 } }
-      # it { with_occurrences_ordering_view { query.count.must_equal 1 } }
-      # it { with_occurrences_ordering_view { query_for_last_year.count.must_equal 0 } }
-    end
-
-    describe 'recurring' do
-      before { create(:event, :recurring_daily_this_week) }
-
-      let(:query_date_time) { today + 2.days }
-
-      it { unexpanded_query.count.must_equal 1 }
-      it { unexpanded_query_for_last_year.count.must_equal 0 }
-      it { with_expanded_occurrences_view { expanded_query.count.must_equal 2 } }
-      it { with_expanded_occurrences_view { expanded_query_for_last_year.count.must_equal 0 } }
-      # it { with_occurrences_ordering_view { query.count.must_equal 0 } }
-      # it { with_occurrences_ordering_view { query_for_last_year.count.must_equal 0 } }
-    end
+  describe 'DateTime' do
+    it { event.daily_occurrences.occurs_until(occurrence.dtend).must_be :exists? }
+    it { event.daily_occurrences.occurs_until(occurrence.dtend + 1.week).must_be :exists? }
+    it { event.daily_occurrences.occurs_until(occurrence.dtend - 1.week).wont_be :exists? }
   end
 
-  describe 'Querying Parent with Embedded Events' do
-    let(:klass) { EventParent }
-    let(:unexpanded_dtend_field) { :'embedded_events.occurrences.daily_occurrences.de' }
-
-    describe 'spanning one day' do
-      before { create(:event_parent, :today) }
-
-      let(:query_date_time) { today + 1.day }
-
-      it { unexpanded_query.count.must_equal 1 }
-      it { unexpanded_query_for_last_year.count.must_equal 0 }
-      it { with_expanded_occurrences_view { expanded_query.count.must_equal 1 } }
-      it { with_expanded_occurrences_view { expanded_query_for_last_year.count.must_equal 0 } }
-      # it { with_occurrences_ordering_view { query.count.must_equal 1 } }
-    end
-
-    describe 'spanning multiple days' do
-      before { create(:event_parent, :today_until_tomorrow) }
-
-      let(:query_date_time) { today + 1.day }
-
-      it { unexpanded_query.count.must_equal 1 }
-      it { unexpanded_query_for_last_year.count.must_equal 0 }
-      it { with_expanded_occurrences_view { expanded_query.count.must_equal 2 } }
-      it { with_expanded_occurrences_view { expanded_query_for_last_year.count.must_equal 0 } }
-      # it { with_occurrences_ordering_view { query.count.must_equal 1 } }
-    end
-
-    describe 'recurring' do
-      before { create(:event_parent, :recurring_daily_this_week) }
-
-      let(:query_date_time) { today + 3.days }
-
-      it { unexpanded_query.count.must_equal 1 }
-      it { unexpanded_query_for_last_year.count.must_equal 0 }
-      it { with_expanded_occurrences_view { expanded_query.count.must_equal 3 } }
-      it { with_expanded_occurrences_view { expanded_query_for_last_year.count.must_equal 0 } }
-      # it { with_occurrences_ordering_view { query.count.must_equal 0 } }
-      # it { with_occurrences_ordering_view { query_for_last_year.count.must_equal 0 } }
-    end
-  end
-
-  private
-
-  # def with_occurrences_ordering_view(&block)
-  #   klass.with_occurrences_ordering_view(&block)
-  # end
-
-  def with_expanded_occurrences_view(&block)
-    klass.with_expanded_occurrences_view(&block)
+  describe 'Date' do
+    it { event.daily_occurrences.occurs_until(occurrence.dtstart.to_date).must_be :exists? }
+    it { event.daily_occurrences.occurs_until(occurrence.dtstart.to_date + 1.week).must_be :exists? }
+    it { event.daily_occurrences.occurs_until(occurrence.dtstart.to_date - 1.week).wont_be :exists? }
   end
 end

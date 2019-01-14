@@ -1,7 +1,19 @@
 FactoryBot.define do
-  factory :occurrence do
+  factory :occurrence, class: ::Occurrence do
     trait :all_day do
       all_day { true }
+    end
+
+    trait :append do
+      operator { :append }
+    end
+
+    trait :replace do
+      operator { :replace }
+    end
+
+    trait :remove do
+      operator { :remove }
     end
 
     trait :today do
@@ -32,12 +44,6 @@ FactoryBot.define do
     trait :today_until_tomorrow do
       dtstart { DateTime.now.beginning_of_day + 4.hours }
       dtend { DateTime.now.beginning_of_day + 1.day }
-    end
-
-    trait :recurring_daily_this_week do
-      dtstart { DateTime.now.beginning_of_day }
-      dtend { DateTime.now.beginning_of_day + 4.hours }
-      schedule { build(:schedule, :daily_this_week) }
     end
   end
 end

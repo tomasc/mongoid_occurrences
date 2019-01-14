@@ -8,32 +8,20 @@ require 'minitest/autorun'
 require 'minitest/spec'
 require 'factory_bot'
 
+require 'active_support/core_ext/date'
+require 'active_support/core_ext/date_time'
+require 'active_support/core_ext/time'
+
 require 'mongoid_occurrence_views'
 
 Mongoid.configure do |config|
-  config.connect_to('mongoid_occurrence_views_test')
+  config.connect_to('mongoid_occurrence_views__test')
 end
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 DatabaseCleaner.orm = :mongoid
-DatabaseCleaner.strategy = :truncation, {
-  except: [
-    Event.occurrences_ordering_view_name,
-    Event.expanded_occurrences_view_name,
-    EmbeddedEvent.occurrences_ordering_view_name,
-    EmbeddedEvent.expanded_occurrences_view_name,
-    EventParent.occurrences_ordering_view_name,
-    EventParent.expanded_occurrences_view_name
-  ]
-}
-
-[Event, EventParent, EmbeddedEvent].each do |klass|
-  MongoidOccurrenceViews::DestroyMongodbView.call(name: klass.send(:occurrences_ordering_view_name))
-  MongoidOccurrenceViews::DestroyMongodbView.call(name: klass.send(:expanded_occurrences_view_name))
-  MongoidOccurrenceViews::Event::CreateOccurrencesOrderingView.call(klass)
-  MongoidOccurrenceViews::Event::CreateExpandedOccurrencesView.call(klass)
-end
+DatabaseCleaner.strategy = :truncation
 
 class MiniTest::Spec
   include FactoryBot::Syntax::Methods
