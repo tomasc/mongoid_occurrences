@@ -12,12 +12,6 @@ module MongoidOccurrenceViews
         aggregation
       end
 
-      def instantiate
-        aggregation.map do |doc|
-          base_criteria.klass.instantiate(doc)
-        end
-      end
-
       private
 
       def criteria

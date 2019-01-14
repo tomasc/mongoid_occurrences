@@ -18,10 +18,14 @@ module MongoidOccurrenceViews
       def initialize(base_criteria, options = {})
         @base_criteria = base_criteria
         @options = options
+
+        aggregation
       end
 
       def instantiate
-        raise NotImplementedError
+        aggregation.map do |doc|
+          base_criteria.klass.instantiate(doc)
+        end
       end
 
       private
