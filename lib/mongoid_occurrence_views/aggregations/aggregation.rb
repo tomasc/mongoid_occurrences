@@ -22,6 +22,15 @@ module MongoidOccurrenceViews
 
       private
 
+      def aggregation
+        base_criteria.klass
+                     .collection
+                     .aggregate(
+                       (selectors + pipeline),
+                       allow_disk_use: allow_disk_use
+                     )
+      end
+
       def selectors
         [
           { '$match' => { '$and' => [criteria.selector] } },

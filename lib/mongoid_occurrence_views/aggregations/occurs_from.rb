@@ -8,12 +8,7 @@ module MongoidOccurrenceViews
         @date_time = date_time
         @options = options
 
-        @aggregation = base_criteria.klass
-                                    .collection
-                                    .aggregate(
-                                      (selectors + pipeline),
-                                      allow_disk_use: allow_disk_use
-                                    )
+        aggregation
       end
 
       def instantiate
@@ -38,7 +33,7 @@ module MongoidOccurrenceViews
         ]
       end
 
-      attr_reader :aggregation, :date_time, :options
+      attr_reader :date_time, :options
     end
   end
 end

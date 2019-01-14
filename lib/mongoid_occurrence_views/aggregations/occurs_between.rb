@@ -9,12 +9,7 @@ module MongoidOccurrenceViews
         @dtend = dtend
         @options = options
 
-        @aggregation = base_criteria.klass
-                                    .collection
-                                    .aggregate(
-                                      (selectors + pipeline),
-                                      allow_disk_use: allow_disk_use
-                                    )
+        aggregation
       end
 
       def instantiate
@@ -39,7 +34,7 @@ module MongoidOccurrenceViews
         ]
       end
 
-      attr_reader :aggregation, :dtstart, :dtend, :options
+      attr_reader :dtstart, :dtend, :options
     end
   end
 end
