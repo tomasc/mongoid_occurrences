@@ -22,7 +22,7 @@ module MongoidOccurrenceViews
         field :dtend, type: DateTime
         field :all_day, type: Boolean
 
-        embedded_in :event, class_name: options.fetch(:class_name, nil)
+        embedded_in :event, class_name: options.fetch(:class_name, nil), inverse_of: :occurrences
 
         after_validation :adjust_dates_for_all_day!, if: :changed?
 
@@ -42,10 +42,10 @@ module MongoidOccurrenceViews
 
     def adjust_dates_for_all_day!
       return unless all_day?
-      return unless dtstart.present? && dtend.present?
+      return unless dtstart? && dtend?
 
-      write_attribute :dtstart, dtstart.try(:beginning_of_day)
-      write_attribute :dtend, dtend.try(:end_of_day)
+      self.dtstart = dtstart.beginning_of_day
+      self.dtend = dtend.end_of_day
     end
   end
 end
