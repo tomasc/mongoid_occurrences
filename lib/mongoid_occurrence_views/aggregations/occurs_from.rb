@@ -7,8 +7,6 @@ module MongoidOccurrenceViews
         @base_criteria = base_criteria
         @date_time = date_time
         @options = options
-
-        aggregation
       end
 
       private

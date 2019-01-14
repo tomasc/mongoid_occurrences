@@ -8,8 +8,6 @@ module MongoidOccurrenceViews
         @dtstart = dtstart
         @dtend = dtend
         @options = options
-
-        aggregation
       end
 
       private
