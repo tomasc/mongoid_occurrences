@@ -72,6 +72,15 @@ It is possible to influence the way the occurrences are expanded into `#daily_oc
 * `:replace` – replaces all occurrences that happen on the same day with itself
 * `:remove` - removes all occurrences that happen on the same day
 
+### Indexes
+
+To optimize the performance of the above scope queries, you might want to add the following indexes:
+
+```ruby
+index :'daily_occurrences.ds' => 1
+index :'daily_occurrences.de' => 1
+```
+
 ### Aggregations
 
 It is possible to aggregate (unwind) the events so that they are multiplied per daily occurrences. Example aggregations are included:
@@ -116,7 +125,12 @@ class EventParent
 end
 ```
 
-You will then need to write your own aggregations with an extra step to `$unwind` the embedded `#events`.
+You will then need to write your own aggregations with an extra step to `$unwind` the embedded `#events`, and your indexes will need to be adjusted as follows:
+
+```ruby
+index :'events.daily_occurrences.ds' => 1
+index :'events.daily_occurrences.de' => 1
+```
 
 ## Development
 
