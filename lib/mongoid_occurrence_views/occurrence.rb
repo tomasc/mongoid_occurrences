@@ -7,6 +7,8 @@ module MongoidOccurrenceViews
     def self.included(base)
       base.extend ClassMethods
 
+      base.include Mongoid::Timestamps::Updated
+
       base.include HasDailyOccurrences
 
       base.prepend HasOperators

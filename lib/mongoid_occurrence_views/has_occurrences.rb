@@ -11,13 +11,21 @@ module MongoidOccurrenceViews
 
     module ClassMethods
       def embeds_many_occurrences(options = {})
+        field :previous_occurences_cache_key, type: String
+
         embeds_many :occurrences, class_name: options.fetch(:class_name)
         accepts_nested_attributes_for :occurrences, allow_destroy: true, reject_if: :all_blank
 
         embeds_many :daily_occurrences, class_name: 'MongoidOccurrenceViews::DailyOccurrence', order: :dtstart.asc
 
-        after_validation :assign_daily_occurrences!
+        after_validation :assign_occurrences_cache_key!
+        after_validation :assign_daily_occurrences!, if: :previous_occurences_cache_key_changed?
       end
+    end
+
+    def occurences_cache_key
+      last_timestamp = occurrences.unscoped.order(updated_at: :desc).limit(1).pluck(:updated_at).first
+      "#{occurrences.size}-#{last_timestamp.to_i}"
     end
 
     def assign_daily_occurrences!
@@ -32,6 +40,12 @@ module MongoidOccurrenceViews
 
         res.sort
       end
+    end
+
+    private
+
+    def assign_occurrences_cache_key!
+      self.previous_occurences_cache_key = occurences_cache_key
     end
   end
 end

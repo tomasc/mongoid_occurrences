@@ -3,14 +3,14 @@ module MongoidOccurrenceViews
     def dtstart
       @dtstart ||= DateTime.demongoize(
         self['_dtstart'] ||
-          daily_occurrences.unscoped.order(dtstart: :asc).pluck(:dtstart).first
+          daily_occurrences.unscoped.order(dtstart: :asc).limit(1).pluck(:dtstart).first
       )
     end
 
     def dtend
       @dtend ||= DateTime.demongoize(
         self['_dtend'] ||
-          daily_occurrences.unscoped.order(dtend: :desc).pluck(:dtend).first
+          daily_occurrences.unscoped.order(dtend: :desc).limit(1).pluck(:dtend).first
       )
     end
 

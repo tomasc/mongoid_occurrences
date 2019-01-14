@@ -11,6 +11,8 @@ describe MongoidOccurrenceViews::Occurrence do
   it { occurrence.must_respond_to :all_day }
   it { occurrence.must_respond_to :all_day? }
 
+  it { occurrence.must_respond_to :updated_at }
+
   describe 'all_day' do
     let(:occurrence) { build :occurrence, :today, dtstart: DateTime.now.beginning_of_day, dtend: DateTime.now.end_of_day }
 

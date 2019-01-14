@@ -11,6 +11,7 @@ module MongoidOccurrenceViews
       private
 
       def daily_occurrences_from_schedule
+        return [] unless dtstart? && dtend?
         return [] unless recurring?
 
         schedule.occurrences(schedule_dtend).map do |occurrence|
@@ -23,6 +24,7 @@ module MongoidOccurrenceViews
       end
 
       def daily_occurrences_from_date_range
+        return [] unless dtstart? && dtend?
         return [] if recurring?
 
         date_range = Range.new(dtstart.to_date, dtend.to_date)
