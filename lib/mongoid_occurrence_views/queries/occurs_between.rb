@@ -3,14 +3,14 @@ require 'mongoid_occurrence_views/queries/query'
 module MongoidOccurrenceViews
   module Queries
     class OccursBetween < Query
+      option :dtstart_field, :dtstart
+      option :dtend_field, :dtend
+
       def initialize(base_criteria, dtstart, dtend, options = {})
         @base_criteria = base_criteria
-
         @dtstart = dtstart
         @dtend = dtend
-
-        @dtstart_field = options.fetch(:dtstart_field, :dtstart)
-        @dtend_field = options.fetch(:dtend_field, :dtend)
+        @options = options
       end
 
       def criteria
@@ -21,18 +21,14 @@ module MongoidOccurrenceViews
       private
 
       def adjusted_dtstart
-        return dtstart.beginning_of_day if dtstart.instance_of?(Date)
-
-        dtstart
+        dtstart.instance_of?(Date) ? dtstart.beginning_of_day : dtstart
       end
 
       def adjusted_dtend
-        return dtend.end_of_day if dtend.instance_of?(Date)
-
-        dtend
+        dtend.instance_of?(Date) ? dtend.beginning_of_day : dtend
       end
 
-      attr_reader :dtstart, :dtend, :dtstart_field, :dtend_field
+      attr_reader :dtstart, :dtend, :options
     end
   end
 end

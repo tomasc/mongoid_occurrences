@@ -3,12 +3,12 @@ require 'mongoid_occurrence_views/queries/query'
 module MongoidOccurrenceViews
   module Queries
     class OccursFrom < Query
+      option :dtstart_field, :dtstart
+
       def initialize(base_criteria, date_time, options = {})
         @base_criteria = base_criteria
-
         @date_time = date_time
-        
-        @dtstart_field = options.fetch(:dtstart_field, :dtstart)
+        @options = options
       end
 
       def criteria
@@ -18,12 +18,10 @@ module MongoidOccurrenceViews
       private
 
       def adjusted_date_time
-        return date_time.beginning_of_day if date_time.instance_of?(Date)
-
-        date_time
+        date_time.instance_of?(Date) ? date_time.beginning_of_day : date_time
       end
 
-      attr_reader :date_time, :dtstart_field
+      attr_reader :date_time, :options
     end
   end
 end

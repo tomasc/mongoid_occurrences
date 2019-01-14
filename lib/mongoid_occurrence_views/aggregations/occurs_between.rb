@@ -3,16 +3,15 @@ require 'mongoid_occurrence_views/aggregations/aggregation'
 module MongoidOccurrenceViews
   module Aggregations
     class OccursBetween < Aggregation
+      option :allow_disk_use, true
+      option :sort_key, :_dtstart
+      option :sort_order, :asc
+
       def initialize(base_criteria, dtstart, dtend, options = {})
         @base_criteria = base_criteria
-
         @dtstart = dtstart
         @dtend = dtend
-
-        @allow_disk_use = options.fetch(:allow_disk_use, true)
-
-        @sort_key = options.fetch(:sort_key, :_dtstart)
-        @sort_order = options.fetch(:sort_order, :asc)
+        @options = options
 
         @aggregation = base_criteria.klass
                                     .collection
@@ -44,7 +43,7 @@ module MongoidOccurrenceViews
         ]
       end
 
-      attr_reader :aggregation, :allow_disk_use, :dtstart, :dtend, :sort_key, :sort_order
+      attr_reader :aggregation, :dtstart, :dtend, :options
     end
   end
 end

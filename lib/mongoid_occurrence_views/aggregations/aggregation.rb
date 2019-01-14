@@ -1,6 +1,12 @@
 module MongoidOccurrenceViews
   module Aggregations
     class Aggregation
+      def self.option(name, default_value=nil)
+        define_method(name) do
+          HashWithIndifferentAccess[options].fetch(name, default_value)
+        end
+      end
+      
       def initialize(base_criteria)
         @base_criteria = base_criteria
       end
