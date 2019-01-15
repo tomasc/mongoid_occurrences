@@ -31,12 +31,12 @@ describe MongoidOccurrences::HasOccurrences do
     let(:occurrence_2) { build :occurrence, :tomorrow, updated_at: Time.now }
     let(:event) { build :event, occurrences: [occurrence_1, occurrence_2] }
 
-    it { event.occurences_cache_key.must_equal "2-#{occurrence_2.updated_at.to_i}" }
+    it { event.occurrences_cache_key.must_equal "2-#{occurrence_2.updated_at.to_i}" }
 
-    describe `#previous_occurences_cache_key_changed?` do
+    describe `#previous_occurrences_cache_key_changed?` do
       before { event.validate! }
 
-      it { event.must_be :_previous_occurences_cache_key_changed? }
+      it { event.must_be :_previous_occurrences_cache_key_changed? }
     end
   end
 end

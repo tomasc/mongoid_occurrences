@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.1
+
+* fix spelling of `*occurrences_cache_key*` related methods
+
 ## 1.0.0
 
 * [PR#4](https://github.com/tomasc/mongoid_occurrences/pull/4) Refactor to replace views with aggregations
