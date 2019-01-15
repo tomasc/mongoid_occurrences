@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'mongoid_ice_cube_extension', '>= 0.1.1'
 
   spec.add_development_dependency 'activesupport', '> 3.0'
-  spec.add_development_dependency 'bundler', '~> 1.16'
+  spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'coveralls'
   spec.add_development_dependency 'database_cleaner'
   spec.add_development_dependency 'factory_bot', '~> 4.0'
