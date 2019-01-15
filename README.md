@@ -1,4 +1,4 @@
-# Mongoid Occurrence Views
+# Mongoid Occurrences
 
 [![Build Status](https://travis-ci.org/tomasc/mongoid_occurrences.svg)](https://travis-ci.org/tomasc/mongoid_occurrences) [![Gem Version](https://badge.fury.io/rb/mongoid_occurrences.svg)](http://badge.fury.io/rb/mongoid_occurrences) [![Coverage Status](https://img.shields.io/coveralls/tomasc/mongoid_occurrences.svg)](https://coveralls.io/r/tomasc/mongoid_occurrences)
 
