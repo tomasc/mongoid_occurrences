@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.0
+
+* [PR#4](https://github.com/tomasc/mongoid_occurrences/pull/4) Refactor to replace views with aggregations
+
 ## 0.2.0
 
 * [PR#3](https://github.com/tomasc/mongoid_occurrences/pull/3) `all_day` becomes a field
