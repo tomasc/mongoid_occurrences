@@ -1,6 +1,6 @@
 # Mongoid Occurrence Views
 
-[![Build Status](https://travis-ci.org/tomasc/mongoid_occurrence_views.svg)](https://travis-ci.org/tomasc/mongoid_occurrence_views) [![Gem Version](https://badge.fury.io/rb/mongoid_occurrence_views.svg)](http://badge.fury.io/rb/mongoid_occurrence_views) [![Coverage Status](https://img.shields.io/coveralls/tomasc/mongoid_occurrence_views.svg)](https://coveralls.io/r/tomasc/mongoid_occurrence_views)
+[![Build Status](https://travis-ci.org/tomasc/mongoid_occurrences.svg)](https://travis-ci.org/tomasc/mongoid_occurrences) [![Gem Version](https://badge.fury.io/rb/mongoid_occurrences.svg)](http://badge.fury.io/rb/mongoid_occurrences) [![Coverage Status](https://img.shields.io/coveralls/tomasc/mongoid_occurrences.svg)](https://coveralls.io/r/tomasc/mongoid_occurrences)
 
 Facilitates aggregations for events with multiple occurrences or a recurring schedule.
 
@@ -14,7 +14,7 @@ Facilitates aggregations for events with multiple occurrences or a recurring sch
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'mongoid_occurrence_views'
+gem 'mongoid_occurrences'
 ```
 
 And then execute:
@@ -23,7 +23,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install mongoid_occurrence_views
+    $ gem install mongoid_occurrences
 
 ## Usage
 
@@ -34,7 +34,7 @@ Define a Mongoid document that will embed occurrence definitions.
 ```ruby
 class Event
   include Mongoid::Document
-  include MongoidOccurrenceViews::HasOccurrences
+  include MongoidOccurrences::HasOccurrences
 
   embeds_many_occurrences class_name: "Occurrence"
 end
@@ -56,7 +56,7 @@ Define a Mongoid document that defines the occurrence.
 ```ruby
 class Occurrence
   include Mongoid::Document
-  include MongoidOccurrenceViews::Occurrence
+  include MongoidOccurrences::Occurrence
 
   embedded_in_event class_name: 'Event'
 end
@@ -85,18 +85,18 @@ index :'daily_occurrences.de' => 1
 
 It is possible to aggregate (unwind) the events so that they are multiplied per daily occurrences. Example aggregations are included:
 
-* `MongoidOccurrenceViews::Aggregations::OccursBetween.instantiate(Event.criteria, dtstart, dtend)`
-* `MongoidOccurrenceViews::Aggregations::OccursFrom.instantiate(Event.criteria, dtstart)`
-* `MongoidOccurrenceViews::Aggregations::OccursOn.instantiate(Event.criteria, day)`
-* `MongoidOccurrenceViews::Aggregations::OccursUntil.instantiate(Event.criteria, dtend)`
+* `MongoidOccurrences::Aggregations::OccursBetween.instantiate(Event.criteria, dtstart, dtend)`
+* `MongoidOccurrences::Aggregations::OccursFrom.instantiate(Event.criteria, dtstart)`
+* `MongoidOccurrences::Aggregations::OccursOn.instantiate(Event.criteria, day)`
+* `MongoidOccurrences::Aggregations::OccursUntil.instantiate(Event.criteria, dtend)`
 
-The aggregations will add `#_dtstart`, `#_dtend` fields to the unwound documents. For easier access, mixin the `MongoidOccurrenceViews::HasFieldsFromAggregation` to your `Event` class:
+The aggregations will add `#_dtstart`, `#_dtend` fields to the unwound documents. For easier access, mixin the `MongoidOccurrences::HasFieldsFromAggregation` to your `Event` class:
 
 ```ruby
 class Event
   include Mongoid::Document
-  include MongoidOccurrenceViews::HasFieldsFromAggregation
-  include MongoidOccurrenceViews::HasOccurrences
+  include MongoidOccurrences::HasFieldsFromAggregation
+  include MongoidOccurrences::HasOccurrences
 
   embeds_many_occurrences class_name: "Occurrence"
 end
@@ -140,7 +140,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/tomasc/mongoid_occurrence_views.
+Bug reports and pull requests are welcome on GitHub at https://github.com/tomasc/mongoid_occurrences.
 
 ## License
 

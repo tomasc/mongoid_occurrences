@@ -12,10 +12,10 @@ require 'active_support/core_ext/date'
 require 'active_support/core_ext/date_time'
 require 'active_support/core_ext/time'
 
-require 'mongoid_occurrence_views'
+require 'mongoid_occurrences'
 
 Mongoid.configure do |config|
-  config.connect_to('mongoid_occurrence_views__test')
+  config.connect_to('mongoid_occurrences__test')
 end
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
