@@ -36,7 +36,7 @@ describe MongoidOccurrenceViews::HasOccurrences do
     describe `#previous_occurences_cache_key_changed?` do
       before { event.validate! }
 
-      it { event.must_be :previous_occurences_cache_key_changed? }
+      it { event.must_be :_previous_occurences_cache_key_changed? }
     end
   end
 end

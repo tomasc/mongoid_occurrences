@@ -2,16 +2,11 @@ module MongoidOccurrenceViews
   module HasOccurrences
     def self.included(base)
       base.extend ClassMethods
-
-      base.scope :occurs_between, ->(dtstart, dtend) { elem_match(daily_occurrences: DailyOccurrence.occurs_between(dtstart, dtend).selector) }
-      base.scope :occurs_from, ->(dtstart) { elem_match(daily_occurrences: DailyOccurrence.occurs_from(dtstart).selector) }
-      base.scope :occurs_on, ->(day) { elem_match(daily_occurrences: DailyOccurrence.occurs_on(day).selector) }
-      base.scope :occurs_until, ->(dtend) { elem_match(daily_occurrences: DailyOccurrence.occurs_until(dtend).selector) }
     end
 
     module ClassMethods
       def embeds_many_occurrences(options = {})
-        field :previous_occurences_cache_key, type: String
+        field :_previous_occurences_cache_key, type: String
 
         embeds_many :occurrences, class_name: options.fetch(:class_name)
         accepts_nested_attributes_for :occurrences, allow_destroy: true, reject_if: :all_blank
@@ -19,7 +14,12 @@ module MongoidOccurrenceViews
         embeds_many :daily_occurrences, class_name: 'MongoidOccurrenceViews::DailyOccurrence', order: :dtstart.asc
 
         after_validation :assign_occurrences_cache_key!
-        after_validation :assign_daily_occurrences!, if: :previous_occurences_cache_key_changed?
+        after_validation :assign_daily_occurrences!, if: :_previous_occurences_cache_key_changed?
+
+        scope :occurs_between, ->(dtstart, dtend) { elem_match(daily_occurrences: DailyOccurrence.occurs_between(dtstart, dtend).selector) }
+        scope :occurs_from, ->(dtstart) { elem_match(daily_occurrences: DailyOccurrence.occurs_from(dtstart).selector) }
+        scope :occurs_on, ->(day) { elem_match(daily_occurrences: DailyOccurrence.occurs_on(day).selector) }
+        scope :occurs_until, ->(dtend) { elem_match(daily_occurrences: DailyOccurrence.occurs_until(dtend).selector) }
       end
     end
 
@@ -45,7 +45,7 @@ module MongoidOccurrenceViews
     private
 
     def assign_occurrences_cache_key!
-      self.previous_occurences_cache_key = occurences_cache_key
+      self._previous_occurences_cache_key = occurences_cache_key
     end
   end
 end
