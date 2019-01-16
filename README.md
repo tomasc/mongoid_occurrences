@@ -122,6 +122,10 @@ class EventParent
   scope :occurs_from, ->(date_time) { elem_match(events: Event.occurs_from(date_time).selector) }
   scope :occurs_on, ->(date_time) { elem_match(events: Event.occurs_on(date_time).selector) }
   scope :occurs_until, ->(date_time) { elem_match(events: Event.occurs_until(date_time).selector) }
+
+  include MongoidOccurrences::HasFieldsFromAggregation
+
+  delegate :daily_occurrences, to: :event
 end
 ```
 
