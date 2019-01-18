@@ -10,6 +10,8 @@ module MongoidOccurrences
     field :ds, as: :dtstart, type: DateTime
     field :de, as: :dtend, type: DateTime
 
+    field :ocid, as: :occurrence_id, type: BSON::ObjectId
+
     validates :dtstart, presence: true
     validates :dtend, presence: true
 

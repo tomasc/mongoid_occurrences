@@ -18,6 +18,7 @@ module MongoidOccurrences
           MongoidOccurrences::DailyOccurrence.new(
             dtstart: occurrence.start_time.change(hour: dtstart.hour, min: dtstart.minute),
             dtend: occurrence.end_time.change(hour: dtend.hour, min: dtend.minute),
+            occurrence_id: id,
             operator: operator
           )
         end
@@ -37,6 +38,7 @@ module MongoidOccurrences
           MongoidOccurrences::DailyOccurrence.new(
             dtstart: occurence_dtstart,
             dtend: occurence_dtend,
+            occurrence_id: id,
             operator: operator
           )
         end

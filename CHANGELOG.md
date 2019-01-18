@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.2
+
+* `DailyOccurrence` has now `oid (occurrence_id)` referring to the original occurrence
+
 ## 1.0.1
 
 * fix spelling of `*occurrences_cache_key*` related methods
