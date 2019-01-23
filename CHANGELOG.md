@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.3
+
+* allow to specify `:parent_name` on `.embedded_in_event` macro
+
 ## 1.0.2
 
 * `DailyOccurrence` has now `oid (occurrence_id)` referring to the original occurrence
