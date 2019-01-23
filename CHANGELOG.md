@@ -1,20 +1,24 @@
 # CHANGELOG
 
+## 1.0.4
+
+* FIX: We rely on occurrences having their `updated_at` field touched when saving an event, which currently doesn't happen. Adding `cascade_callbacks` fixes that.
+
 ## 1.0.3
 
-* allow to specify `:parent_name` on `.embedded_in_event` macro
+* ADD: allow to specify `:parent_name` on `.embedded_in_event` macro
 
 ## 1.0.2
 
-* `DailyOccurrence` has now `oid (occurrence_id)` referring to the original occurrence
+* ADD: `DailyOccurrence` has now `oid (occurrence_id)` referring to the original occurrence
 
 ## 1.0.1
 
-* fix spelling of `*occurrences_cache_key*` related methods
+* FIX: spelling of `*occurrences_cache_key*` related methods
 
 ## 1.0.0
 
-* [PR#4](https://github.com/tomasc/mongoid_occurrences/pull/4) Refactor to replace views with aggregations
+* REFACTOR: [PR#4](https://github.com/tomasc/mongoid_occurrences/pull/4) Refactor to replace views with aggregations
 
 ## 0.2.0
 
