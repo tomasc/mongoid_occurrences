@@ -8,8 +8,8 @@ module MongoidOccurrences
       end
 
       module ClassMethods
-        def embedded_in_event(options = {})
-          super(options)
+        def embedded_in_event(name, options = {})
+          super(name, options)
 
           include Mongoid::EnumAttribute
           enum :operator, %i[append replace remove], default: :append

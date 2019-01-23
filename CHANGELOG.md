@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.0
+
+* CHANGE: `#embedded_in_event` requires `name` (`#embedded_in_event(name, options)`)
+
 ## 1.0.4
 
 * FIX: We rely on occurrences having their `updated_at` field touched when saving an event, which currently doesn't happen. Adding `cascade_callbacks` fixes that.

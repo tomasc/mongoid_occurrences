@@ -4,8 +4,8 @@ module MongoidOccurrences
       SCHEDULE_DURATION = 1.year
 
       module ClassMethods
-        def embedded_in_event(options = {})
-          super(options)
+        def embedded_in_event(name, options = {})
+          super(name, options)
 
           field :schedule, type: MongoidIceCubeExtension::Schedule
           field :schedule_dtstart, type: Time

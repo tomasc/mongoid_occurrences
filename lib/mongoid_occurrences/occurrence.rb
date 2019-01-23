@@ -19,12 +19,12 @@ module MongoidOccurrences
     end
 
     module ClassMethods
-      def embedded_in_event(options = {})
+      def embedded_in_event(name, options = {})
         field :dtstart, type: DateTime
         field :dtend, type: DateTime
         field :all_day, type: Boolean
 
-        embedded_in options.fetch(:parent_name, :event), class_name: options.fetch(:class_name, nil), inverse_of: :occurrences
+        embedded_in name, class_name: options.fetch(:class_name, nil), inverse_of: :occurrences
 
         after_validation :adjust_dates_for_all_day!, if: :changed?
 
