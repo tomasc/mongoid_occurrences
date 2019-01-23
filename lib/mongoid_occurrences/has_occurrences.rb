@@ -8,7 +8,7 @@ module MongoidOccurrences
       def embeds_many_occurrences(options = {})
         field :_previous_occurrences_cache_key, type: String
 
-        embeds_many :occurrences, class_name: options.fetch(:class_name)
+        embeds_many :occurrences, class_name: options.fetch(:class_name), cascade_callbacks: true
         accepts_nested_attributes_for :occurrences, allow_destroy: true, reject_if: :all_blank
 
         embeds_many :daily_occurrences, class_name: 'MongoidOccurrences::DailyOccurrence', order: :dtstart.asc
