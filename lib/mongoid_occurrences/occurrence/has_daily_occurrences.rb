@@ -12,8 +12,8 @@ module MongoidOccurrences
         return [] unless dtstart? && dtend?
         return [] unless recurring?
         schedule.occurrences(schedule_dtend).map do |occurrence|
-          occurrence_dtstart = dtstart.change(day: occurrence.start_time.in_time_zone(Time.zone).day)
-          occurrence_dtend = dtend.change(day: occurrence.end_time.in_time_zone(Time.zone).day)
+          occurrence_dtstart = occurrence.start_time.in_time_zone(Time.zone).change(hour: dtstart.hour, minute: dtstart.minute)
+          occurrence_dtend = occurrence.end_time.in_time_zone(Time.zone).change(hour: dtend.hour, minute: dtend.minute)
 
           build_daily_occurrence(occurrence_dtstart, occurrence_dtend, id, operator)
         end
