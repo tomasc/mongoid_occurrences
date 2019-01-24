@@ -10,7 +10,7 @@ module MongoidOccurrences
       end
 
       def criteria
-        OccursBetween.criteria(base_criteria, adjusted_dtstart, adjusted_dtend, options)
+        OccursBetween.criteria(base_criteria, adjusted_dtstart.utc, adjusted_dtend.utc, options)
       end
 
       private
