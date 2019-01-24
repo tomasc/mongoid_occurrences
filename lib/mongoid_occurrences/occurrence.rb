@@ -30,6 +30,8 @@ module MongoidOccurrences
 
         validates :dtstart, presence: true
         validates :dtend, presence: true
+
+        validate :dtend_must_be_after_dtstart
       end
     end
 
@@ -48,6 +50,16 @@ module MongoidOccurrences
 
       self.dtstart = dtstart.beginning_of_day
       self.dtend = dtend.end_of_day
+    end
+
+    private
+
+    def dtend_must_be_after_dtstart
+      return unless dtstart.present? && dtend.present?
+
+      if dtend < dtstart
+        errors.add(:dtend, :must_be_after_dtstart)
+      end
     end
   end
 end
