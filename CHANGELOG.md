@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.1.1
+
+* FIX: issues with handling time zone in daily occurrences and queries
+* ADD: validation on `Occurrence` for `dtend` being after `dtstart`
+
 ## 1.1.0
 
 * CHANGE: `#embedded_in_event` requires `name` (`#embedded_in_event(name, options)`)
