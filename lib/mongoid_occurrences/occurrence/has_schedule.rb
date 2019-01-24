@@ -17,7 +17,7 @@ module MongoidOccurrences
 
       def schedule_dtstart
         read_attribute(:schedule_dtstart) ||
-          (dtstart.try(:to_time) || Time.now)
+          (dtstart.try(:to_time) || Time.zone.now)
       end
 
       def schedule_dtend

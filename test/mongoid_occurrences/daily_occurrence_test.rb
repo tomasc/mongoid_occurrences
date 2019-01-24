@@ -18,7 +18,7 @@ describe MongoidOccurrences::DailyOccurrence do
     end
 
     describe '#all_day' do
-      let(:daily_occurrence) { build :daily_occurrence, dtstart: Time.now.beginning_of_day, dtend: Time.now.end_of_day }
+      let(:daily_occurrence) { build :daily_occurrence, dtstart: Time.zone.now.beginning_of_day, dtend: Time.zone.now.end_of_day }
 
       it { daily_occurrence.must_be :all_day }
       it { daily_occurrence.must_be :all_day? }

@@ -14,7 +14,7 @@ describe MongoidOccurrences::Occurrence do
   it { occurrence.must_respond_to :updated_at }
 
   describe 'all_day' do
-    let(:occurrence) { build :occurrence, :today, dtstart: DateTime.now.beginning_of_day, dtend: DateTime.now.end_of_day }
+    let(:occurrence) { build :occurrence, :today, dtstart: Time.zone.now.beginning_of_day, dtend: Time.zone.now.end_of_day }
 
     it { occurrence.must_be :all_day }
     it { occurrence.must_be :all_day? }
