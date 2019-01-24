@@ -14,8 +14,8 @@ module MongoidOccurrences
       end
 
       def criteria
-        base_criteria.lte(dtstart_field => adjusted_dtend)
-                     .gte(dtend_field => adjusted_dtstart)
+        base_criteria.lte(dtstart_field => adjusted_dtend.utc)
+                     .gte(dtend_field => adjusted_dtstart.utc)
       end
 
       private

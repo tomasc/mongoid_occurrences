@@ -12,7 +12,7 @@ module MongoidOccurrences
       end
 
       def criteria
-        base_criteria.lte(dtend_field => adjusted_date_time)
+        base_criteria.lte(dtend_field => adjusted_date_time.utc)
       end
 
       private

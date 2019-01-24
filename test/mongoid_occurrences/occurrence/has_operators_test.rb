@@ -24,8 +24,8 @@ describe MongoidOccurrences::Occurrence::HasOperators do
   end
 
   describe ':replace' do
-    let(:dtstart) { DateTime.now.beginning_of_day + 1.day + 1.hour }
-    let(:dtend) { DateTime.now.beginning_of_day + 1.day + 11.hours }
+    let(:dtstart) { Time.zone.now.beginning_of_day + 1.day + 1.hour }
+    let(:dtend) { Time.zone.now.beginning_of_day + 1.day + 11.hours }
 
     let(:occurrence_1) { build :occurrence, :append, :today, schedule: build(:schedule, :daily_for_a_week) }
     let(:occurrence_2) { build :occurrence, :replace, :tomorrow, dtstart: dtstart, dtend: dtend }

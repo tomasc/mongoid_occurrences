@@ -14,6 +14,8 @@ require 'active_support/core_ext/time'
 
 require 'mongoid_occurrences'
 
+Time.zone = 'Hawaii'
+
 Mongoid.configure do |config|
   config.connect_to('mongoid_occurrences__test')
 end

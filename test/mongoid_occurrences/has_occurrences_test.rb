@@ -27,8 +27,8 @@ describe MongoidOccurrences::HasOccurrences do
   end
 
   describe '#occurrences_cache_key' do
-    let(:occurrence_1) { build :occurrence, :today, updated_at: Time.now - 1.day }
-    let(:occurrence_2) { build :occurrence, :tomorrow, updated_at: Time.now }
+    let(:occurrence_1) { build :occurrence, :today, updated_at: Time.zone.now - 1.day }
+    let(:occurrence_2) { build :occurrence, :tomorrow, updated_at: Time.zone.now }
     let(:event) { build :event, occurrences: [occurrence_1, occurrence_2] }
 
     it { event.occurrences_cache_key.must_equal "2-#{occurrence_2.updated_at.to_i}" }
