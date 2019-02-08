@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.2
+
+* FIX: missing minutes when creating daily occurrences from a schedule
+
 ## 1.1.1
 
 * FIX: issues with handling time zone in daily occurrences and queries
