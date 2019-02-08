@@ -17,23 +17,23 @@ FactoryBot.define do
     end
 
     trait :today do
-      dtstart { Time.zone.now.beginning_of_day + 4.hours }
-      dtend { Time.zone.now.beginning_of_day + 6.hours }
+      dtstart { Time.zone.now.beginning_of_day + 4.hours + 30.minutes }
+      dtend { Time.zone.now.beginning_of_day + 6.hours + 45.minutes }
     end
 
     trait :tomorrow do
-      dtstart { Time.zone.now.beginning_of_day + 1.day + 4.hours }
-      dtend { Time.zone.now.beginning_of_day + 1.day + 6.hours }
+      dtstart { Time.zone.now.beginning_of_day + 1.day + 4.hours + 30.minutes }
+      dtend { Time.zone.now.beginning_of_day + 1.day + 6.hours + 45.minutes }
     end
 
     trait :yesterday do
-      dtstart { Time.zone.now.beginning_of_day - 1.day + 4.hours }
-      dtend { Time.zone.now.beginning_of_day - 1.day + 6.hours }
+      dtstart { Time.zone.now.beginning_of_day - 1.day + 4.hours + 30.minutes }
+      dtend { Time.zone.now.beginning_of_day - 1.day + 6.hours + 45.minutes }
     end
 
     trait :next_week do
-      dtstart { Time.zone.now.beginning_of_day + 1.week + 4.hours }
-      dtend { Time.zone.now.beginning_of_day + 1.week + 6.hours }
+      dtstart { Time.zone.now.beginning_of_day + 1.week + 4.hours + 30.minutes }
+      dtend { Time.zone.now.beginning_of_day + 1.week + 6.hours + 45.minutes }
     end
 
     trait :last_week do
