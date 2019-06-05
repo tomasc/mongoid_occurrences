@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+* ADD: default sort order on the `#occurrences` association
+
 ## 1.1.2
 
 * FIX: missing minutes when creating daily occurrences from a schedule

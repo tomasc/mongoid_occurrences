@@ -4,5 +4,5 @@ class Event
   include MongoidOccurrences::HasFieldsFromAggregation
   include MongoidOccurrences::HasOccurrences
 
-  embeds_many_occurrences class_name: "::Occurrence"
+  embeds_many_occurrences class_name: 'Occurrence'
 end
