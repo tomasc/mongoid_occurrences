@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 1.1.4
 
 * ADD: default sort order on the `#occurrences` association
 
