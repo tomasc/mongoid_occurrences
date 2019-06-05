@@ -1,9 +1,5 @@
 # CHANGELOG
 
-## 1.1.3
-
-* ADD: default sort order (`:ds.asc`) on `occurrences` association
-
 ## 1.1.2
 
 * FIX: missing minutes when creating daily occurrences from a schedule
