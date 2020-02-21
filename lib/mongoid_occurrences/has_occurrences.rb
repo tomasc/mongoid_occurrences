@@ -29,6 +29,7 @@ module MongoidOccurrences
     end
 
     def assign_daily_occurrences!
+      return self.daily_occurrences = nil if occurrences.blank?
       self.daily_occurrences = begin
         res = occurrences.with_operators(:append).flat_map(&:daily_occurrences)
 
