@@ -5,6 +5,10 @@ module MongoidOccurrences
     module HasOperators
       def self.prepended(base)
         base.scope :with_operators, ->(operators) { criteria.in(_operator: Array(operators)) }
+
+        %i[append replace remove].each do |o|
+          define_method(o) { operator == o }
+        end
       end
 
       module ClassMethods

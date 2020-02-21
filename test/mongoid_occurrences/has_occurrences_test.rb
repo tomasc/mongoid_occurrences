@@ -5,25 +5,46 @@ describe MongoidOccurrences::HasOccurrences do
   let(:event) { build :event }
 
   describe 'scopes' do
-    it { subject.must_respond_to :occurs_between }
-    it { subject.must_respond_to :occurs_from }
-    it { subject.must_respond_to :occurs_on }
-    it { subject.must_respond_to :occurs_until }
+    it { _(subject).must_respond_to :occurs_between }
+    it { _(subject).must_respond_to :occurs_from }
+    it { _(subject).must_respond_to :occurs_on }
+    it { _(subject).must_respond_to :occurs_until }
   end
 
   describe 'relations' do
-    it { event.must_respond_to :occurrences }
-    it { event.must_respond_to :daily_occurrences }
+    it { _(event).must_respond_to :occurrences }
+    it { _(event).must_respond_to :daily_occurrences }
   end
 
-  describe 'daily_occurrences' do
-    let(:occurrence_1) { build :occurrence, :today }
-    let(:occurrence_2) { build :occurrence, :tomorrow }
-    let(:event) { build :event, occurrences: [occurrence_1, occurrence_2] }
+  describe '#assign_daily_occurrences!' do
+    it 'builds and assigns the daily occurrences' do
+      event = create(:event, :occurring_today_and_tomorrow)
 
-    before { event.assign_daily_occurrences! }
+      _(event.daily_occurrences.size).must_equal 2
+    end
 
-    it { event.daily_occurrences.size.must_equal 2 }
+    it 'reassigns when changing occurrences' do
+      event = create(:event, :occurring_today_and_tomorrow)
+
+      _(event.daily_occurrences.size).must_equal 2
+
+      event.occurrences.build build(:occurrence, :yesterday).attributes
+      event.save
+      event.assign_daily_occurrences!
+
+      _(event.daily_occurrences.size).must_equal 3
+    end
+
+    it 'wipes the daily occurrences' do
+      event = create(:event, :occurring_today_and_tomorrow)
+
+      _(event.daily_occurrences.size).must_equal 2
+
+      event.occurrences = nil
+      event.assign_daily_occurrences!
+
+      _(event.daily_occurrences.size).must_equal 0
+    end
   end
 
   describe '#occurrences_cache_key' do
@@ -31,12 +52,12 @@ describe MongoidOccurrences::HasOccurrences do
     let(:occurrence_2) { build :occurrence, :tomorrow, updated_at: Time.zone.now }
     let(:event) { build :event, occurrences: [occurrence_1, occurrence_2] }
 
-    it { event.occurrences_cache_key.must_equal "2-#{occurrence_2.updated_at.to_i}" }
+    it { _(event.occurrences_cache_key).must_equal "2-#{occurrence_2.updated_at.to_i}" }
 
-    describe `#previous_occurrences_cache_key_changed?` do
+    describe '#previous_occurrences_cache_key_changed?' do
       before { event.validate! }
 
-      it { event.must_be :_previous_occurrences_cache_key_changed? }
+      it { _(event).must_be :_previous_occurrences_cache_key_changed? }
     end
   end
 end

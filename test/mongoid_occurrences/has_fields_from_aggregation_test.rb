@@ -11,8 +11,8 @@ describe MongoidOccurrences::HasFieldsFromAggregation do
 
     before { event.assign_daily_occurrences! }
 
-    it { event.dtstart.must_equal occurrence_1.dtstart }
-    it { event.dtend.must_equal occurrence_2.dtend }
+    it { _(event.dtstart).must_equal occurrence_1.dtstart }
+    it { _(event.dtend).must_equal occurrence_2.dtend }
   end
 
   describe '#all_day?' do
@@ -21,7 +21,7 @@ describe MongoidOccurrences::HasFieldsFromAggregation do
 
     before { event.assign_daily_occurrences! }
 
-    it { event.must_be :all_day }
-    it { event.must_be :all_day? }
+    it { _(event).must_be :all_day }
+    it { _(event).must_be :all_day? }
   end
 end
