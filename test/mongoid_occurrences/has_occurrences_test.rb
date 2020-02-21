@@ -16,14 +16,24 @@ describe MongoidOccurrences::HasOccurrences do
     it { _(event).must_respond_to :daily_occurrences }
   end
 
-  describe 'daily_occurrences' do
-    let(:occurrence_1) { build :occurrence, :today }
-    let(:occurrence_2) { build :occurrence, :tomorrow }
-    let(:event) { build :event, occurrences: [occurrence_1, occurrence_2] }
+  describe '#assign_daily_occurrences!' do
+    it 'builds and assigns the daily occurrences' do
+      event = create(:event, :occurring_today_and_tomorrow)
 
-    before { event.assign_daily_occurrences! }
+      _(event.daily_occurrences.size).must_equal 2
+    end
 
-    it { event.daily_occurrences.size.must_equal 2 }
+    it 'reassigns when changing occurrences' do
+      event = create(:event, :occurring_today_and_tomorrow)
+
+      _(event.daily_occurrences.size).must_equal 2
+
+      event.occurrences.build build(:occurrence, :yesterday).attributes
+      event.save
+      event.assign_daily_occurrences!
+
+      _(event.daily_occurrences.size).must_equal 3
+    end
 
     it 'wipes the daily occurrences' do
       event = create(:event, :occurring_today_and_tomorrow)
