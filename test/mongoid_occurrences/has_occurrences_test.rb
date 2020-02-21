@@ -24,6 +24,17 @@ describe MongoidOccurrences::HasOccurrences do
     before { event.assign_daily_occurrences! }
 
     it { event.daily_occurrences.size.must_equal 2 }
+
+    it 'wipes the daily occurrences' do
+      event = create(:event, :occurring_today_and_tomorrow)
+
+      _(event.daily_occurrences.size).must_equal 2
+
+      event.occurrences = nil
+      event.assign_daily_occurrences!
+
+      _(event.daily_occurrences.size).must_equal 0
+    end
   end
 
   describe '#occurrences_cache_key' do
