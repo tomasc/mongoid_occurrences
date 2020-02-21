@@ -13,6 +13,12 @@ describe MongoidOccurrences::Occurrence::HasOperators do
     it { _(occurrence.operator).must_equal :append }
   end
 
+  it "defines predicate methods for each operator" do
+    %i[append remove replace].each do |operator|
+      _(Occurrence).must_respond_to operator
+    end
+  end
+
   describe ':append' do
     let(:occurrence_1) { build :occurrence, :append, :yesterday }
     let(:occurrence_2) { build :occurrence, :append, :today, schedule: build(:schedule, :daily_for_a_week) }
