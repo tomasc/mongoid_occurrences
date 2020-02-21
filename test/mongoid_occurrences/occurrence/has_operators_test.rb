@@ -5,12 +5,12 @@ describe MongoidOccurrences::Occurrence::HasOperators do
   let(:occurrence) { build :occurrence }
 
   describe 'Scopes' do
-    it { subject.must_respond_to :with_operators }
+    it { _(subject).must_respond_to :with_operators }
   end
 
   describe '#operator' do
-    it { occurrence.must_respond_to :operator }
-    it { occurrence.operator.must_equal :append }
+    it { _(occurrence).must_respond_to :operator }
+    it { _(occurrence.operator).must_equal :append }
   end
 
   describe ':append' do
@@ -20,7 +20,7 @@ describe MongoidOccurrences::Occurrence::HasOperators do
 
     before { event.assign_daily_occurrences! }
 
-    it { event.daily_occurrences.size.must_equal 8 }
+    it { _(event.daily_occurrences.size).must_equal 8 }
   end
 
   describe ':replace' do
@@ -33,9 +33,9 @@ describe MongoidOccurrences::Occurrence::HasOperators do
 
     before { event.assign_daily_occurrences! }
 
-    it { event.daily_occurrences.size.must_equal 7 }
-    it { event.daily_occurrences[1].dtstart.must_equal dtstart }
-    it { event.daily_occurrences[1].dtend.must_equal dtend }
+    it { _(event.daily_occurrences.size).must_equal 7 }
+    it { _(event.daily_occurrences[1].dtstart).must_equal dtstart }
+    it { _(event.daily_occurrences[1].dtend).must_equal dtend }
   end
 
   describe ':remove' do
@@ -45,6 +45,6 @@ describe MongoidOccurrences::Occurrence::HasOperators do
 
     before { event.assign_daily_occurrences! }
 
-    it { event.daily_occurrences.size.must_equal 6 }
+    it { _(event.daily_occurrences.size).must_equal 6 }
   end
 end

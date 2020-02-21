@@ -1,5 +1,5 @@
 require 'test_helper'
 
 describe MongoidOccurrences do
-  it { ::MongoidOccurrences::VERSION.wont_be_nil }
+  it { _(::MongoidOccurrences::VERSION).wont_be_nil }
 end
