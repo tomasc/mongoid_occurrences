@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.5 (next)
+## 1.1.5
 
 - FIX: wiping `#daily_occurrences` when removing all `#occurrences`
 - FIX: correctly assign `#daily_occurrences` when changing `#occurrences`
