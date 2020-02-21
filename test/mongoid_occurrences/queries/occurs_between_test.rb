@@ -10,7 +10,7 @@ describe MongoidOccurrences::Queries::OccursBetween do
     it { _(event.daily_occurrences.occurs_between(occurrence.dtstart, occurrence.dtend)).must_be :exists? }
     it { _(event.daily_occurrences.occurs_between(occurrence.dtstart + 1.hour, occurrence.dtend - 1.hour)).must_be :exists? }
     it { _(event.daily_occurrences.occurs_between(occurrence.dtstart - 1.hour, occurrence.dtend + 1.hour)).must_be :exists? }
-    it { event.daily_occurrences.occurs_between(occurrence.dtstart + 10.days, occurrence.dtend + 10.days).wont_be :exists? }
+    it { _(event.daily_occurrences.occurs_between(occurrence.dtstart + 10.days, occurrence.dtend + 10.days)).wont_be :exists? }
   end
 
   describe 'Date' do
