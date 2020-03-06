@@ -1,6 +1,7 @@
 module MongoidOccurrences
   module HasFieldsFromAggregation
     def dtstart
+      return if daily_occurrences.blank?
       @dtstart ||= DateTime.demongoize(
         self['_dtstart'] ||
           daily_occurrences.unscoped.order(dtstart: :asc).limit(1).pluck(:dtstart).first
@@ -8,6 +9,7 @@ module MongoidOccurrences
     end
 
     def dtend
+      return if daily_occurrences.blank?
       @dtend ||= DateTime.demongoize(
         self['_dtend'] ||
           daily_occurrences.unscoped.order(dtend: :desc).limit(1).pluck(:dtend).first

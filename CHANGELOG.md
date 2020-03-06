@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.6
+
+- FIX: `dtstart` / `dtend` blowing up when `daily_occurrences` are nil
+
 ## 1.1.5
 
 - FIX: wiping `#daily_occurrences` when removing all `#occurrences`
