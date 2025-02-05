@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'ice_cube'
-  spec.add_dependency 'mongoid', '>= 7.0.2', '< 9'
+  spec.add_dependency 'mongoid', '>= 7.0.2', '< 10'
   spec.add_dependency 'mongoid-enum_attribute'
   spec.add_dependency 'mongoid_ice_cube_extension', '>= 0.1.1'
 
