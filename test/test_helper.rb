@@ -22,9 +22,6 @@ end
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
-DatabaseCleaner.orm = :mongoid
-DatabaseCleaner.strategy = :truncation
-
 class Minitest::Spec
   include FactoryBot::Syntax::Methods
   FactoryBot.definition_file_paths = [File.expand_path('../factories', __FILE__)]
