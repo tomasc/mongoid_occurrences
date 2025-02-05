@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Next
+
+- ADD: mongoid 8 compatibility
+
 ## 1.1.6
 
 - FIX: `dtstart` / `dtend` blowing up when `daily_occurrences` are nil
