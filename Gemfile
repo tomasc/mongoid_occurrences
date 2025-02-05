@@ -6,6 +6,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 gemspec
 
 gem 'concurrent-ruby', '1.3.4'
+gem 'mutex_m'
 
 case version = ENV.fetch('MONGOID_VERSION', '~> 8.0')
 when /8/ then gem 'mongoid', '~> 8.0'
