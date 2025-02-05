@@ -1,0 +1,26 @@
+name: Tests
+on: [push, pull_request]
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        mongoid_version: ["7", "8"]
+        ruby: ["3.0", "3.1", "3.2", "3.3"]
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo
+        ports: ["27017:27017"]
+    env:
+      MONGOID_VERSION: ${{ matrix.mongoid_version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - run: bundle exec rake
