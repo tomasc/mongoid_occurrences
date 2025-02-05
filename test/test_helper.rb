@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
 require 'bundler/setup'
-require 'database_cleaner'
+require 'database_cleaner/mongoid'
 require 'minitest'
 require 'minitest-implicit-subject'
 require 'minitest/autorun'

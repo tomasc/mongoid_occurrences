@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'activesupport', '> 3.0'
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'coveralls'
-  spec.add_development_dependency 'database_cleaner'
+  spec.add_development_dependency 'database_cleaner-mongoid'
   spec.add_development_dependency 'factory_bot'
   spec.add_development_dependency 'guard'
   spec.add_development_dependency 'guard-minitest'
