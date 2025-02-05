@@ -20,18 +20,18 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'ice_cube'
-  spec.add_dependency 'mongoid', '>= 7.0.2', '< 8'
+  spec.add_dependency 'mongoid', '>= 7.0.2', '< 9'
   spec.add_dependency 'mongoid-enum_attribute'
   spec.add_dependency 'mongoid_ice_cube_extension', '>= 0.1.1'
 
   spec.add_development_dependency 'activesupport', '> 3.0'
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'coveralls'
-  spec.add_development_dependency 'database_cleaner'
-  spec.add_development_dependency 'factory_bot', '~> 4.0'
+  spec.add_development_dependency 'database_cleaner-mongoid'
+  spec.add_development_dependency 'factory_bot'
   spec.add_development_dependency 'guard'
   spec.add_development_dependency 'guard-minitest'
-  spec.add_development_dependency 'minitest', '~> 5.0'
+  spec.add_development_dependency 'minitest'
   spec.add_development_dependency 'minitest-implicit-subject'
-  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rake'
 end

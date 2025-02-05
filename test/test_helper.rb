@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
 require 'bundler/setup'
-require 'database_cleaner'
+require 'database_cleaner/mongoid'
 require 'minitest'
 require 'minitest-implicit-subject'
 require 'minitest/autorun'
@@ -22,10 +22,7 @@ end
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
-DatabaseCleaner.orm = :mongoid
-DatabaseCleaner.strategy = :truncation
-
-class MiniTest::Spec
+class Minitest::Spec
   include FactoryBot::Syntax::Methods
   FactoryBot.definition_file_paths = [File.expand_path('../factories', __FILE__)]
   FactoryBot.find_definitions
