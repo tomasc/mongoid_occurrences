@@ -22,7 +22,7 @@ module MongoidOccurrences
       def embedded_in_event(name, options = {})
         field :dtstart, type: DateTime
         field :dtend, type: DateTime
-        field :all_day, type: Boolean
+        field :all_day, type: Mongoid::Boolean
 
         embedded_in name, class_name: options.fetch(:class_name, nil), inverse_of: :occurrences
 
