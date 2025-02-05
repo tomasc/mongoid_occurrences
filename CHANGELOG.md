@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Next
+
+- ADD: mongoid 9 compatibility
+
 ## 1.2.0
 
 - ADD: mongoid 8 compatibility
