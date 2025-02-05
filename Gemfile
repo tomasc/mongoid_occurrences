@@ -7,6 +7,7 @@ gemspec
 
 gem 'concurrent-ruby', '1.3.4'
 gem 'mutex_m'
+gem 'base64'
 
 case version = ENV.fetch('MONGOID_VERSION', '~> 8.0')
 when /8/ then gem 'mongoid', '~> 8.0'
